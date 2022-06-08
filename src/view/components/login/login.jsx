@@ -1,6 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth, logInWithEmailAndPassword } from '../../../controller';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import girlStudent from '../../../assets/girlStudent.svg';
-export default function login() {
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, loading] = useAuthState(auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loading) {
+      // maybe trigger a loading screen
+      return;
+    }
+    if (user) navigate('/home');
+  }, [user, loading, navigate]);
+
   return (
     <div class="h-screen flex">
       <div class="flex md:w-1/2 sm:w-1/4 bg-heroLogin bg-tBlue bg-contain bg-no-repeat justify-around items-center">
@@ -10,17 +27,19 @@ export default function login() {
         </div>
       </div>
       <div class="flex md:w-1/2 sm:w-1/4  justify-center items-center bg-white">
-        <form class="bg-white w-3/4">
+        <div class="bg-white w-3/4">
           <h1 class="text-gray-800 font-bold text-3xl mb-1">Hello Again!</h1>
           <p class="text-lg font-normal text-gray-600 mb-7">Welcome Back</p>
           <div class="flex items-center border-2 py-3 px-6 rounded-2xl mb-4">
             <img src={girlStudent} alt="user" class="w-8 h-8 " />
             <input
               class="pl-2 outline-none border-none"
-              type="text"
-              name="userName"
-              id="userName"
-              placeholder="Username"
+              type="email"
+              name="email"
+              id="email"
+              placeholder="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div class="flex items-center border-2 py-3 px-6 rounded-2xl">
@@ -38,19 +57,21 @@ export default function login() {
             </svg>
             <input
               class="pl-2 outline-none border-none"
-              type="text"
-              name=""
-              id=""
-              placeholder="Password"
+              type="password"
+              name="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="*************"
             />
           </div>
           <button
-            type="submit"
+            onClick={() => logInWithEmailAndPassword(email, password)}
             class="block w-full bg-indigo-600 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
           >
             Login
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

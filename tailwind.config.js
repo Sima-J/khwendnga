@@ -4,6 +4,11 @@ module.exports = {
     extend: {
       colors: {
         tBlue: '#243c5a',
+        darkPurple: '#674471',
+        normalPurple: '#8946A6',
+        lightPurple: '#B762C1',
+        blue: '#A8ECE7',
+        yellow: '#FDFF8F',
       },
       keyframes: {
         'spin-slow': {

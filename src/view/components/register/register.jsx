@@ -1,40 +1,137 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
+import {
+  auth,
+  registerWithEmailAndPassword,
+  storage,
+} from '../../../controller';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import swal from 'sweetalert';
 
-export default function register() {
+export default function Register() {
+  const [roleType, setRoleType] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [street, setSteet] = useState('');
+  const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
+  const [image, setImage] = useState(null);
+  const [grade, setGrade] = useState('');
+  const [gName, setGname] = useState('');
+  const [gPhone, setGphone] = useState('');
+  const [gEmail, setGemail] = useState('');
+
+  // eslint-disable-next-line no-unused-vars
+  const [progress, setProgress] = useState(0);
+  const formHandler = (e) => {
+    e.preventDefault();
+    const file = e.target[0].files[0];
+    uploadFiles(file);
+  };
+
+  const uploadFiles = (file) => {
+    //
+    if (!file) return;
+    const sotrageRef = ref(storage, `users/${file.name}`);
+    const uploadTask = uploadBytesResumable(sotrageRef, file);
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const prog = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(prog);
+      },
+      (error) => console.log(error),
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+          setImage(downloadURL);
+        });
+      }
+    );
+  };
+
+  const [user, loading, error] = useAuthState(auth);
+  const navigate = useNavigate();
+  const register = () => {
+    registerWithEmailAndPassword(
+      email,
+      password,
+      image,
+      roleType,
+      firstName,
+      middleName,
+      lastName,
+      city,
+      street,
+      phone,
+      grade,
+      gName,
+      gPhone,
+      gEmail
+    );
+    swal('', 'success', 'success');
+  };
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) navigate('/register');
+  }, [user, loading, error, navigate]);
+
   return (
     <div className="grid min-h-screen place-items-center">
       <div className="w-11/12 p-12 bg-white sm:w-8/12 md:w-1/2 lg:w-5/12">
         <h1 className="text-2xl font-bold text-center">
-          Adding New User to Khwendnga <br />
-          <span className="font-normal text-center my-2">
+          Adding New User
+          <br />
+          <span className="font-normal text-center my-1">
             Please fill in User information
           </span>
         </h1>
-        <form className="mt-6">
+        <div className="mt-6">
           <div className="mb-4 	">
-            <label class="block text-sm font-medium text-gray-700">Photo</label>
-            <div class="mt-1 flex items-center">
-              <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                <svg
-                  class="h-full w-full text-gray-300"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </span>
-              <button
-                type="button"
-                class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Change
-              </button>
+            <div className="App">
+              <form onSubmit={formHandler}>
+                <div className="mt-1 flex items-center">
+                  <img
+                    className="inline-block h-20 w-20 rounded-full overflow-hidden bg-gray-100"
+                    alt="other"
+                    src={image || 'https://via.placeholder.com/150'}
+                  />
+                  <label
+                    htmlFor="imageUpload"
+                    type="button"
+                    className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  >
+                    Select Image File
+                  </label>
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    style={{ display: 'none' }}
+                    className="input"
+                  />
+
+                  <button
+                    className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    type="submit"
+                  >
+                    Upload
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
           <div className="flex justify-between gap-3">
             <span className="w-1/2">
               <label
-                for="firstName"
+                htmlFor="firstName"
                 className="block text-xs font-semibold text-gray-600 uppercase"
               >
                 Firstname
@@ -43,15 +140,15 @@ export default function register() {
                 id="firstName"
                 type="text"
                 name="firstName"
-                placeholder="Sima"
-                autocomplete="given-name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 required
               />
             </span>
             <span className="w-1/2">
               <label
-                for="middleName"
+                htmlFor="middleName"
                 className="block text-xs font-semibold text-gray-600 uppercase"
               >
                 Middle Name
@@ -60,15 +157,15 @@ export default function register() {
                 id="middlename"
                 type="text"
                 name="middleName"
-                placeholder="Jazaa"
-                autocomplete="middle-name"
+                value={middleName}
+                onChange={(e) => setMiddleName(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 required
               />
             </span>
             <span className="w-1/2">
               <label
-                for="lastName"
+                htmlFor="lastName"
                 className="block text-xs font-semibold text-gray-600 uppercase"
               >
                 Last Name
@@ -77,31 +174,18 @@ export default function register() {
                 id="lastName"
                 type="text"
                 name="lastName"
-                placeholder="Mohammed"
-                autocomplete="family-name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 required
               />
             </span>
           </div>
-          <label
-            for="userName"
-            className="block text-xs mt-2 font-semibold text-gray-600 uppercase"
-          >
-            username
-          </label>
-          <input
-            id="userName"
-            type="text"
-            name="userName"
-            placeholder="sima"
-            className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-            required
-          />
+
           <div className="flex justify-between gap-3">
             <span className="w-1/2">
               <label
-                for="firstName"
+                htmlFor="city"
                 className="block text-xs font-semibold text-gray-600 uppercase"
               >
                 City
@@ -110,15 +194,15 @@ export default function register() {
                 id="city"
                 type="text"
                 name="city"
-                placeholder="Sima"
-                autocomplete="given-name"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 required
               />
             </span>
             <span className="w-1/2">
               <label
-                for="street"
+                htmlFor="street"
                 className="block text-xs font-semibold text-gray-600 uppercase"
               >
                 Street{' '}
@@ -127,46 +211,79 @@ export default function register() {
                 id="street"
                 type="text"
                 name="street"
-                placeholder="Jazaa"
-                autocomplete="street"
+                value={street}
+                onChange={(e) => setSteet(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 required
               />
             </span>
           </div>
-          <label
-            for="accountType"
-            className="block text-xs  font-semibold text-gray-600 uppercase"
-          ></label>
           <select
             id="accountType"
+            value={roleType}
+            onChange={(e) => setRoleType(e.target.value)}
             name="accountType"
-            placeholder="sima"
-            className="block w-full p-3 mt-4 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+            className="form-select block w-full p-3 mt-4 text-gray-700 bg-gray-200  focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             required
           >
-            <option>Choose an account type</option>
-            <option>Teacher</option>
-            <option>Student</option>
-            <option>Admin</option>
+            <option value="" selected disabled hidden>
+              Choose Account Type
+            </option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+            <option value="admin">Admin</option>
           </select>
-          <label
-            for="email"
-            className="block mt-2 text-xs font-semibold text-gray-600 uppercase"
-          >
-            Grade
-          </label>
-          <input
-            id="grade"
-            type="number"
-            name="grade"
-            placeholder="5"
-            className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-            required
-          />
 
+          {(() => {
+            if (roleType === 'student') {
+              return (
+                <>
+                  <input
+                    id="grade"
+                    type="number"
+                    name="grade"
+                    placeholder="Student Grade"
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                    className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    required
+                  />
+                  <input
+                    id="gName"
+                    type="text"
+                    name="gName"
+                    placeholder="Guardian Name"
+                    value={gName}
+                    onChange={(e) => setGname(e.target.value)}
+                    className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    required
+                  />
+                  <input
+                    id="gPhone"
+                    type="tel"
+                    name="gPhone"
+                    value={gPhone}
+                    onChange={(e) => setGphone(e.target.value)}
+                    placeholder="Guardian Phone"
+                    className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    required
+                  />
+                  <input
+                    id="gEmail"
+                    type="email"
+                    name="gEmail"
+                    placeholder="Guardian Email"
+                    value={gEmail}
+                    onChange={(e) => setGemail(e.target.value)}
+                    className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    required
+                  />
+                </>
+              );
+            }
+          })()}
           <label
-            for="email"
+            htmlFor="email"
             className="block mt-2 text-xs font-semibold text-gray-600 uppercase"
           >
             E-mail
@@ -175,13 +292,13 @@ export default function register() {
             id="email"
             type="email"
             name="email"
-            placeholder="name@email.com"
-            autocomplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             required
           />
           <label
-            for="userName"
+            htmlFor="phone"
             className="block text-xs mt-2 font-semibold text-gray-600 uppercase"
           >
             Phone Number
@@ -190,12 +307,13 @@ export default function register() {
             id="phone"
             type="tel"
             name="phone"
-            placeholder="07501188256"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             required
           />
           <label
-            for="password"
+            htmlFor="password"
             className="block mt-2 text-xs font-semibold text-gray-600 uppercase"
           >
             Password
@@ -204,33 +322,18 @@ export default function register() {
             id="password"
             type="password"
             name="password"
-            placeholder="********"
-            autocomplete="new-password"
-            className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-            required
-          />
-          <label
-            for="password-confirm"
-            className="block mt-2 text-xs font-semibold text-gray-600 uppercase"
-          >
-            Confirm password
-          </label>
-          <input
-            id="password-confirm"
-            type="password"
-            name="password-confirm"
-            placeholder="********"
-            autocomplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             required
           />
           <button
-            type="submit"
+            onClick={register}
             className="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-black shadow-lg focus:outline-none hover:bg-gray-900 hover:shadow-none"
           >
             Submit
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

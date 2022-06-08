@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import {
   homeRoute,
@@ -12,34 +13,36 @@ import {
   registerRoute,
   assignmentRoute,
 } from './router';
-import ChatView from './view/chatView';
-import CourseView from './view/courseView';
-import AddCourseView from './view/addCourseView';
+import ChatView from './view/container/chat/chatView';
+import CourseView from './view/container/course/courseView';
+import AddCourseView from './view/container/course/addCourseView';
 // import NavbarView from './view/navbarView';
-import LoginView from './view/loginView';
-import ProfileView from './view/profileView';
-import HomeView from './view/homeView';
-import Course from './view/courseView';
-import Register from './view/registerView';
-import AssignementView from './view/assignmentView';
+import LoginView from './view/container/authentication/loginView';
+import ProfileView from './view/container/profile/profileView';
+import HomeView from './view/container/home/homeView';
+import Course from './view/container/course/courseView';
+import Register from './view/container/authentication/registerView';
+import AssignementView from './view/container/assignment/assignmentView';
+import { FetchCourses } from './controller';
 import './App.css';
 
 function App() {
+  const dispatch = useDispatch();
+
+  dispatch(FetchCourses());
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path={homeRoute} element={<HomeView />} />
-          <Route path={profileRoute} element={<ProfileView />} />
-          <Route path={courseRoute} element={<CourseView />} />
-          <Route path={addCourseRoute} element={<AddCourseView />} />
-          <Route path={courseDetailsRoute} element={<Course />} />
-          <Route path={loginRoute} element={<LoginView />} />
-          <Route path={chatRoute} element={<ChatView />} />
-          <Route path={registerRoute} element={<Register />} />
-          <Route path={assignmentRoute} element={<AssignementView />} />
-        </Routes>
-      </Router>
+      <Routes>
+        <Route path={homeRoute} element={<HomeView />} />
+        <Route path={profileRoute} element={<ProfileView />} />
+        <Route path={courseRoute} element={<CourseView />} />
+        <Route path={addCourseRoute} element={<AddCourseView />} />
+        <Route path={courseDetailsRoute} element={<Course />} />
+        <Route path={loginRoute} element={<LoginView />} />
+        <Route path={chatRoute} element={<ChatView />} />
+        <Route path={registerRoute} element={<Register />} />
+        <Route path={assignmentRoute} element={<AssignementView />} />
+      </Routes>
     </>
   );
 }

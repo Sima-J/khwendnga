@@ -1,5 +1,5 @@
 import React from 'react';
-import CourseHero from './components/course/courseHero';
+import CourseHero from '../../components/course/courseHero';
 
 export default function courseView() {
   return (

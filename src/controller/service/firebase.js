@@ -6,6 +6,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBG346JM_BWGcL7yS1Dg1MIQWHNykaMfcM',
@@ -26,8 +27,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 const logInWithEmailAndPassword = async (email, password) => {
   try {
@@ -38,15 +41,61 @@ const logInWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (
+  email,
+  password,
+  image,
+  roleType,
+  firstName,
+  middleName,
+  lastName,
+  city,
+  street,
+  phone,
+  grade,
+  gName,
+  gPhone,
+  gEmail
+) => {
   try {
-    const res = await createUserWithEmailAndPassword(auth, email, password);
+    const res = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+      image,
+      roleType,
+      firstName,
+      middleName,
+      lastName,
+      city,
+      street,
+      phone,
+      grade,
+      gName,
+      gPhone,
+      gEmail
+    );
     const user = res.user;
     await addDoc(collection(db, 'users'), {
       uid: user.uid,
-      name,
       authProvider: 'local',
       email,
+      password,
+      image,
+      firstName,
+      middleName,
+      lastName,
+      city,
+      street,
+      phone,
+      grade,
+      gName,
+      gPhone,
+      gEmail,
+    });
+    await addDoc(collection(db, 'roles'), {
+      uid: user.uid,
+      roleType,
     });
   } catch (err) {
     console.error(err);
@@ -57,10 +106,10 @@ const registerWithEmailAndPassword = async (name, email, password) => {
 const logout = () => {
   signOut(auth);
 };
-
 export {
   auth,
   db,
+  storage,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   logout,

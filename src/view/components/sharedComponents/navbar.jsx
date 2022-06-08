@@ -4,6 +4,11 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import logo from '../../../assets/logo.png';
+import React, { useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
+import { auth, db, logout } from '../../../controller';
+import { query, collection, getDocs, where } from 'firebase/firestore';
 
 const navigation = [
   { name: 'Home', href: '#', current: true },
@@ -17,7 +22,30 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function navbar() {
+export default function Navbar() {
+  const [user, loading, error] = useAuthState(auth);
+  const [firstName, setFirstName] = useState('');
+
+  const fetchUserName = async () => {
+    try {
+      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+
+      setFirstName(data.firstName);
+    } catch (err) {
+      console.error(err);
+      alert('An error occured while fetching user data');
+    }
+  };
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (loading) return;
+    if (!user) return navigate('/');
+
+    fetchUserName();
+  }, [user, loading]);
+
   return (
     <Disclosure as="nav" className="bg-white-200 shadow-md ">
       {({ open }) => (
@@ -78,7 +106,7 @@ export default function navbar() {
                 </button>
 
                 {/* Profile dropdown */}
-                <Menu as="div" className="ml-3 relative">
+                <Menu as="div" className="ml-3  z-10 relative">
                   <div>
                     <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                       <span className="sr-only">Open user menu</span>
@@ -127,15 +155,15 @@ export default function navbar() {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <button
+                            onClick={logout}
                             className={classNames(
                               active ? 'underline' : '',
                               'block px-4 py-2 text-sm text-gray-700'
                             )}
                           >
                             Sign out
-                          </a>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>
