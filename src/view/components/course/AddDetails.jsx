@@ -1,201 +1,266 @@
-import React, { useState, useEffect } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
-import { auth, storage, db } from '../../../controller';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import uuid from 'react-uuid';
 import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { db, storage } from '../../../controller';
+import { FetchCourses } from '../../../controller';
+import { doc } from 'firebase/firestore';
 
-export default function AddDetails() {
-  const [firstName, setFirstName] = useState('');
-  const [image, setImage] = useState(null);
-  const [courseImage, setCourseImage] = useState(null);
-  const [courseLevel, setCourseLevel] = useState('');
-  const [courseCode, setCourseCode] = useState('');
-  const [courseName, setCourseName] = useState('');
-  const [uid, setUid] = useState('');
+export default function AddItemForm() {
+  const history = useNavigate();
+  const dispatch = useDispatch();
+  const courses = useSelector((state) => state.courses);
 
-  // eslint-disable-next-line no-unused-vars
-  const [progress, setProgress] = useState(0);
-  const formHandler = (e) => {
-    e.preventDefault();
-    const file = e.target[0].files[0];
-    uploadFiles(file);
-  };
+  const [Images, setImages] = useState([]);
+  const [assignement, setAssignement] = useState([]);
+  const [video, setVideos] = useState([]);
+  const [loading, setloading] = useState(false);
+  const [courseData, setCourseData] = useState({
+    categories: {},
+  });
 
-  const uploadFiles = (file) => {
-    //
-    if (!file) return;
-    const sotrageRef = ref(storage, `course/${file.name}`);
-    const uploadTask = uploadBytesResumable(sotrageRef, file);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const prog = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgress(prog);
-      },
-      (error) => console.log(error),
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL);
-          setCourseImage(downloadURL);
-        });
-      }
-    );
-  };
-  const addCourse = (e) => {
-    e.preventDefault();
-    addDoc(collection(db, 'courses'), {
-      courseImage,
-      courseName,
-      courseCode,
-      courseLevel,
-      firstName,
-      image,
-      uid,
+  useEffect(() => {
+    setCourseData({
+      ...courseData,
     });
+  }, [courses]);
 
-    setCourseImage(null);
-    setCourseName('');
-    setCourseCode('');
-    setCourseLevel('');
-    swal('', 'success', 'success');
+  const removeImg = (index) => {
+    const imgs = [...Images];
+    imgs.splice(index, 1);
+    setImages(imgs);
   };
 
-  const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
-
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-
-      setFirstName(data.firstName);
-      setUid(user?.uid);
-      setImage(data.image);
-    } catch (err) {
-      console.error(err);
-      alert('An error occured while fetching user data');
+  const handleChnage = (e) => {
+    if (e.target.name === 'imageInput') {
+      if (e.target.files.length + Images.length < 4) {
+        setImages([...Images, ...e.target.files]);
+      }
+    } else if (e.target.name === 'asgInput') {
+      if (e.target.files.length + assignement.length < 3) {
+        setAssignement([...assignement, ...e.target.files]);
+      }
+    } else if (e.target.name === 'videoInput') {
+      if (e.target.files.length + assignement.length < 3) {
+        setVideos([...video, ...e.target.files]);
+      }
+    } else {
+      setCourseData({
+        ...courseData,
+        [e.target.name]: e.target.value,
+      });
     }
   };
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate('/');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    fetchUserName();
-  }, [user, loading]);
+    const ImageRef = [];
+
+    for (let i = 0; i < Images.length; i += 1) {
+      const UUID = uuid();
+      const fileRef = storage.child(UUID + Images[i].name);
+      // eslint-disable-next-line no-await-in-loop
+      await fileRef.put(Images[i]);
+      // eslint-disable-next-line no-await-in-loop
+      const fileUrl = await fileRef.getDownloadURL();
+      ImageRef.push(fileUrl);
+    }
+    const AsgRef = [];
+
+    for (let i = 0; i < assignement.length; i += 1) {
+      const UUID = uuid();
+      const fileRef = storage.child(UUID + assignement[i].name);
+      // eslint-disable-next-line no-await-in-loop
+      await fileRef.put(assignement[i]);
+      // eslint-disable-next-line no-await-in-loop
+      const fileUrl = await fileRef.getDownloadURL();
+      AsgRef.push(fileUrl);
+    }
+    const VideoRef = [];
+
+    for (let i = 0; i < video.length; i += 1) {
+      const UUID = uuid();
+      const fileRef = storage.child(UUID + video[i].name);
+      // eslint-disable-next-line no-await-in-loop
+      await fileRef.put(video[i]);
+      // eslint-disable-next-line no-await-in-loop
+      const fileUrl = await fileRef.getDownloadURL();
+      VideoRef.push(fileUrl);
+    }
+
+    const userRef = doc(db, 'courses');
+    userRef
+      .set(
+        {
+          sectionName: courseData.title,
+          assignment: AsgRef,
+          description: courseData.description,
+          deadline: courseData.dealine,
+          uui: courses.courses.uui,
+          images: ImageRef,
+          video: VideoRef,
+        },
+        { merge: true }
+      )
+
+      .then(() => {
+        dispatch(FetchCourses);
+      });
+    const item = courseData.title.toUpperCase();
+    setloading(false);
+    swal('', ` | ${item} | has been added`, 'success');
+    setCourseData({
+      date: new Date().toString(),
+      title: '',
+      assignment: '',
+      description: '',
+      uui: courses.courses.uui,
+      images: '',
+      video: '',
+      deadline: '',
+    });
+    setImages([]);
+    setAssignement([]);
+    setVideos([]);
+  };
+
   return (
-    <div className="grid min-h-screen place-items-center">
-      <div className="w-11/12 p-12 bg-white sm:w-8/12 md:w-1/2 lg:w-5/12">
-        <h1 className="text-2xl font-bold text-center">
-          Adding New Course Teacher {firstName}
-          <br />
-          <span className="font-normal text-center my-1">
-            Please fill in Course information
-          </span>
-        </h1>
-        <div className="mt-6">
-          <div className="mb-4 	">
-            <div className="App">
-              <form onSubmit={formHandler}>
-                <div className="mt-1 flex items-center">
-                  <img
-                    className="inline-block h-24 w-24 overflow-hidden bg-gray-100"
-                    alt="other"
-                    src={courseImage || 'https://via.placeholder.com/150'}
-                  />
-                  <label
-                    htmlFor="imageUpload"
-                    type="button"
-                    className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
-                  >
-                    Select Image File
-                  </label>
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    style={{ display: 'none' }}
-                    className="input"
-                  />
+    <div className=" bg-pureWhite p-8">
+      <SweetAlert
+        title=""
+        show={loading}
+        showConfirm={false}
+        closeOnClickOutside
+        onCancel={() => setloading(false)}
+        style={{ backgroundColor: 'transparent' }}
+      >
+        <div className="bg-blue bg-opacity-70 rounded-3xl px-32 py-10 shadow-md ">
+          <FontAwesomeIcon
+            icon="spinner"
+            className="text-white mb-5"
+            pulse
+            size="7x"
+          />
+          <h1 className="text-white m-3 mt-4 text-3xl">loading</h1>
+        </div>
+      </SweetAlert>
 
-                  <button
-                    className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    type="submit"
-                  >
-                    Upload
-                  </button>
+      <div className="  p-4  w-full">
+        <div className="text-4xl mb-10 text-center text-darkBlue font-bold py-4  shadow rounded border">
+          lllll{' '}
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1    gap-8 md:grid-cols-11   my-4 ">
+            <div className="grid gap-10  md:col-span-6">
+              <div>
+                <label
+                  htmlFor="title"
+                  className="md:text-xl text-blue font-semibold"
+                >
+                  additem.title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  value={courseData.title}
+                  onChange={handleChnage}
+                  className="border-b-2 border-blue  p-3  md:text-xl w-full focus:border-darkBlue focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-10 md:col-span-5">
+              <div className=" p-12 item-center border-2 border-blue border-dashed rounded-3xl text-center">
+                <div className="grid  pb-4 p-1   ">
+                  <FontAwesomeIcon
+                    icon="images"
+                    className="fa-3x my-3 text-blue justify-self-center"
+                  />
+                  {Images[0] ? (
+                    Images.map((img, index) => {
+                      return (
+                        <div className="m-1 grid grid-cols-12  rounded   border px-0  ">
+                          <p className="bg-blue rounded-l inline py-1   text-white text-center col-span-1">
+                            {index + 1}
+                          </p>
+                          <p className="px-2 self-center text-left col-span-10 overflow-hidden">
+                            {img.name}
+                          </p>
+
+                          <button
+                            type="button"
+                            className="text-red border-l focus:outline-none  justify-self-end px-2 rounded-r col-span-1"
+                            onClick={() => removeImg(index)}
+                          >
+                            X
+                          </button>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p>number image</p>
+                  )}
                 </div>
-              </form>
+                <label
+                  htmlFor="file-upload"
+                  className="relative cursor-pointer  rounded-md font-medium hover:shadow-none shadow-lg transition duration-300 ease-in-out hover:bg-darkBlue text-white bg-blue py-2 px-2"
+                >
+                  <span>additem.upload</span>
+                  <input
+                    id="file-upload"
+                    name="imageInput"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    multiple
+                    className="sr-only"
+                    onChange={handleChnage}
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="md:col-span-11">
+              <label
+                htmlFor="Description"
+                className="md:text-xl text-blue font-semibold"
+              >
+                proudctDetail.description
+              </label>
+
+              <textarea
+                cols="1"
+                rows="1"
+                name="description"
+                required
+                value={courseData.description}
+                className="border-b-2 border-blue  py-3   md:text-xl w-full h-24  focus:border-darkBlue focus:outline-none"
+                onChange={handleChnage}
+              />
+            </div>
+
+            <div className="md:col-span-5  text-center">
+              <button
+                type="submit"
+                onClick={() => setloading(true)}
+                className="py-3 px-6 rounded-2xl focus:outline-none shadow-md hover:shadow-none  bg-blue text-white font-bold w-full sm:w-28 transition duration-300  ease-in-out"
+              >
+                additem.add
+              </button>
+            </div>
+            <div className="md:col-span-5  text-center">
+              <input
+                value="additem.cancel"
+                type="button"
+                onClick={() => history.goBack()}
+                className="py-3 px-6   focus:outline-none text-blue shadow-md hover:shadow-none border rounded-2xl border-blue hover:bg-blue hover:text-white font-bold w-full sm:w-28 transition duration-300  ease-in-out"
+              />
             </div>
           </div>
-          <div className="flex justify-between gap-3">
-            <span className="w-1/2">
-              <label
-                htmlFor="courseName"
-                className="block text-xs font-semibold text-gray-600 uppercase"
-              >
-                Course Name
-              </label>
-              <input
-                id="courseName"
-                type="text"
-                name="courseName"
-                value={courseName}
-                onChange={(e) => setCourseName(e.target.value)}
-                className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                required
-              />
-            </span>
-            <span className="w-1/2">
-              <label
-                htmlFor="courseCode"
-                className="block text-xs font-semibold text-gray-600 uppercase"
-              >
-                Course Code
-              </label>
-              <input
-                id="courseCode"
-                type="text"
-                name="courseCode"
-                value={courseCode}
-                onChange={(e) => setCourseCode(e.target.value)}
-                className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                required
-              />
-            </span>
-          </div>
-
-          <select
-            id="courseLevel"
-            value={courseLevel}
-            onChange={(e) => setCourseLevel(e.target.value)}
-            name="accountType"
-            className="form-select block w-full p-3 mt-4 text-gray-700 bg-gray-200  focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-            required
-          >
-            <option value="" selected disabled hidden>
-              Choose Course Level
-            </option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="3">4</option>
-            <option value="3">5</option>
-            <option value="3">6</option>
-          </select>
-
-          <button
-            onClick={addCourse}
-            className="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-black shadow-lg focus:outline-none hover:bg-gray-900 hover:shadow-none"
-          >
-            Submit
-          </button>
-        </div>
+        </form>
       </div>
     </div>
   );

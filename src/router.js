@@ -6,3 +6,4 @@ export const addCourseRoute = '/addcourse';
 export const chatRoute = '/chat';
 export const registerRoute = '/register';
 export const assignmentRoute = '/assignement';
+export const courseDetailsRoute = '/course/:id/addMaterial';
