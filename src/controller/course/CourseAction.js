@@ -34,44 +34,19 @@ export const FetchCoursesFailure = (error) => {
 };
 
 export const FetchCourses = () => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(FetchCoursesRequest());
-    // console.error('fetch');
-    // const equipment = collection(db, 'courses');
-    // const snapshot = getDocs(equipment);
-    // const data = snapshot.map((doc) => ({
-    //   id: doc.id,
-    //   ...doc.data(),
-    // }));
-    // console.error(data);
-
-    getDoc(doc(db, 'courses', 'sima')).then((docSnap) => {
-      if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
-      } else {
-        console.log('No such document!');
-      }
-    });
-    //     const querySnapshot = await getDocs(collection(db, "cities"));
-    // querySnapshot.forEach((doc) => {
-    //   // doc.data() is never undefined for query doc snapshots
-    //   console.log(doc.id, " => ", doc.data());
-    // });
-    // db.collection('courses').doc().then((cityRef) => {
-    //   cityRef.get()
-    //     .then(doc => { /* do stuff */ })
-    //     .catch(err => { /* error! */ });
-    // });
+    console.error('fetch');
 
     try {
-      const equipment = collection(db, 'courses');
-      const snapshot = getDocs(equipment);
-      const data = snapshot.map((doc) => ({
-        id: doc.id,
+      const querySnapshot = await getDocs(collection(db, 'courses'));
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, ' => ', doc.data());
+      const data = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
+        id: doc.id,
       }));
-      console.error('data');
-
+      console.log(data);
       dispatch(FetchCoursesSuccess(data));
     } catch (error) {
       dispatch(FetchCoursesFailure(error));

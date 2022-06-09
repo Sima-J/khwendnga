@@ -28,6 +28,16 @@ export default function Navbar() {
 
   const fetchUserName = async () => {
     try {
+      // const querySnapshot = await getDocs(collection(db, 'courses'));
+      // querySnapshot.forEach((doc) => {
+      //   // doc.data() is never undefined for query doc snapshots
+      //   console.log(doc.id, ' => ', doc.data());
+      //   const data = querySnapshot.docs.map((doc) => ({
+      //     ...doc.data(),
+      //     id: doc.id,
+      //   }));
+      //   console.log(data);
+      // });
       const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
       const doc = await getDocs(q);
       const data = doc.docs[0].data();

@@ -1,6 +1,6 @@
 import React from 'react';
 import MainHero from '../../components/course/mainHero';
-import CourseCards from '../../components/course/courseCards';
+import CourseCards from '../../components/course/CourseSection';
 import SecondSection from '../../components/course/secondSection';
 import Navbar from '../../components/sharedComponents/navbar';
 

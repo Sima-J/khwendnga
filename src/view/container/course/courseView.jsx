@@ -1,10 +1,10 @@
 import React from 'react';
-import CourseHero from '../../components/course/courseHero';
+import CourseDetails from '../../components/course/CourseDetails';
 
 export default function courseView() {
   return (
     <div>
-      <CourseHero />
+      <CourseDetails />
     </div>
   );
 }

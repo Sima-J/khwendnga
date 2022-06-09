@@ -14,13 +14,12 @@ import {
   assignmentRoute,
 } from './router';
 import ChatView from './view/container/chat/chatView';
-import CourseView from './view/container/course/courseView';
 import AddCourseView from './view/container/course/addCourseView';
 // import NavbarView from './view/navbarView';
 import LoginView from './view/container/authentication/loginView';
 import ProfileView from './view/container/profile/profileView';
 import HomeView from './view/container/home/homeView';
-import Course from './view/container/course/courseView';
+import CourseView from './view/container/course/courseView';
 import Register from './view/container/authentication/registerView';
 import AssignementView from './view/container/assignment/assignmentView';
 import { FetchCourses } from './controller';
@@ -37,7 +36,6 @@ function App() {
         <Route path={profileRoute} element={<ProfileView />} />
         <Route path={courseRoute} element={<CourseView />} />
         <Route path={addCourseRoute} element={<AddCourseView />} />
-        <Route path={courseDetailsRoute} element={<Course />} />
         <Route path={loginRoute} element={<LoginView />} />
         <Route path={chatRoute} element={<ChatView />} />
         <Route path={registerRoute} element={<Register />} />

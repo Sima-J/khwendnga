@@ -6,7 +6,7 @@ import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import swal from 'sweetalert';
 
-export default function AddCourse() {
+export default function AddDetails() {
   const [firstName, setFirstName] = useState('');
   const [image, setImage] = useState(null);
   const [courseImage, setCourseImage] = useState(null);

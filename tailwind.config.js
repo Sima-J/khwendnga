@@ -9,6 +9,7 @@ module.exports = {
         lightPurple: '#B762C1',
         blue: '#A8ECE7',
         yellow: '#FDFF8F',
+        white: '#FFFFFF',
       },
       keyframes: {
         'spin-slow': {
