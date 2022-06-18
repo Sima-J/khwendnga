@@ -76,6 +76,20 @@ export default function Register() {
       gPhone,
       gEmail
     );
+    setCity('');
+    setEmail('');
+    setPassword('');
+    setImage(null);
+    setFirstName('');
+    setGemail('');
+    setGname('');
+    setGphone('');
+    setGrade('');
+    setLastName('');
+    setMiddleName('');
+    setPhone('');
+    setSteet('');
+    setRoleType('');
     swal('', 'success', 'success');
   };
 
