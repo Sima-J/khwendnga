@@ -1,0 +1,16 @@
+.footer {
+  width: 100%;
+  background-color: #243c5a;
+  position: absolute;
+  margin-bottom: 0;
+}
+
+.footer > .footer-header {
+  display: inline;
+}
+
+.footer > .footer-header > .footer-title {
+  font-size: 22px;
+  text-align: center;
+  color: white;
+}

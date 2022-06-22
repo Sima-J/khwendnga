@@ -1,0 +1,10 @@
+export { default as LoginView } from './loginView//LoginView';
+export { default as NavbarView } from './navbarView/NavbarView';
+export { default as FooterView } from './footerView/FooterView';
+export { default as HomeView } from './homeView/HomeView';
+export { default as CourseFormView } from './courseView/CourseFormView';
+export { default as RegisterView } from './registerView/RegisterView';
+export { default as ProfileView } from './profileView/ProfileView';
+export { default as EditProfileView } from './profileView/EditProfileView';
+export { default as CourseView } from './courseView/CourseView';
+export { default as AddAssignmentView } from './assignmentView/AddAssignmentView';
