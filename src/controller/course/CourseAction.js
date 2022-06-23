@@ -39,13 +39,23 @@ export const FetchCourses = () => {
       const docm = await getDocs(q);
       const data1 = docm.docs[0].data();
 
-      console.log(data1.grade);
-      const querySnapshot = await getDocs(
-        query(
-          collection(db, 'courses'),
-          where('courseLevel', '==', data1.grade)
-        )
-      );
+      const q1 = query(collection(db, 'roles'), where('uid', '==', user?.uid));
+      const docm1 = await getDocs(q1);
+      const data11 = docm1.docs[0].data();
+
+      let querySnapshot;
+      if (data11.roleType === 'teacher') {
+        querySnapshot = await getDocs(
+          query(collection(db, 'courses'), where('teacherId', '==', data11.uid))
+        );
+      } else {
+        querySnapshot = await getDocs(
+          query(
+            collection(db, 'courses'),
+            where('courseLevel', '==', data1.grade)
+          )
+        );
+      }
 
       const data = querySnapshot.docs.map((doc) => ({
         ...doc.data(),

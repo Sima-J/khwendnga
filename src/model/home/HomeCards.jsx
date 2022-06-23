@@ -14,7 +14,7 @@ export default function HomeCards() {
               <div>
                 <CourseCard
                   id={item.id}
-                  firstName={item.name}
+                  name={item.name}
                   courseImage={item.courseImage}
                   image={item.image}
                   courseName={item.courseName}

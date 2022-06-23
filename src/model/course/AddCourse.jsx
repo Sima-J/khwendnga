@@ -3,7 +3,14 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHistory } from 'react-router-dom';
 import { auth, storage, db } from '../../controller';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  setDoc,
+} from 'firebase/firestore';
 import swal from 'sweetalert';
 
 export default function AddCourseView() {
@@ -13,7 +20,6 @@ export default function AddCourseView() {
   const [courseLevel, setCourseLevel] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
-  const [uid, setUid] = useState('');
 
   // eslint-disable-next-line no-unused-vars
   const [progress, setProgress] = useState(0);
@@ -50,14 +56,15 @@ export default function AddCourseView() {
 
   const addCourse = (e) => {
     e.preventDefault();
-    addDoc(collection(db, 'courses'), {
+    const newDocRef = doc(collection(db, 'courses'));
+    setDoc(newDocRef, {
       courseImage,
       courseName,
       courseCode,
       courseLevel,
       name,
       image,
-      uid,
+      uid: newDocRef.id,
       teacherId: user?.uid,
     });
 
@@ -77,7 +84,6 @@ export default function AddCourseView() {
       const data = doc.docs[0].data();
 
       setFirstName(data.name);
-      setUid(user?.uid);
       setImage(data.image);
     } catch (err) {
       console.error(err);
@@ -92,8 +98,8 @@ export default function AddCourseView() {
     fetchUserName();
   }, [user, loading]);
   return (
-    <div className="grid min-h-screen place-items-center">
-      <div className="w-11/12 p-12 bg-white sm:w-8/12 md:w-1/2 lg:w-5/12">
+    <div className="grid min-h-screen w-screen  p-12 place-items-center">
+      <div className="w-11/12 bg-white sm:w-8/12 md:w-1/2 lg:w-5/12">
         <h1 className="text-2xl font-bold text-center">
           Adding New Course Teacher {name}
           <br />

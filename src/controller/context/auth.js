@@ -1,7 +1,7 @@
-import { createContext, useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../controller";
-import Loading from "../components/Loading";
+import { createContext, useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '..';
+import { LoadingView } from './../../view';
 
 export const AuthContext = createContext();
 
@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
     });
   }, []);
   if (loading) {
-    return <Loading />;
+    return <LoadingView />;
   }
   return (
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>

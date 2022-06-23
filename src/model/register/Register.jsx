@@ -318,15 +318,24 @@ const Register = () => {
               if (roleType === 'student') {
                 return (
                   <>
-                    <input
-                      type="number"
+                    <select
+                      id="grade"
                       name="grade"
                       placeholder="Student Grade"
                       value={grade}
                       onChange={handleChange}
-                      className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                      className="form-select block w-full p-4 mt-4 text-gray-700 bg-gray-200  focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                       required
-                    />
+                    >
+                      <option value="" selected disabled hidden>
+                        Choose Grade Type
+                      </option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
                     <input
                       type="text"
                       name="gName"

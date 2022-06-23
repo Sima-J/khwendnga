@@ -1,6 +1,18 @@
 import React from 'react';
-import { CourseSection } from '../../model';
+import { DisplayCourse, CourseDetails, DisplayAssignment } from '../../model';
+import { FetchAssignment } from '../../controller';
+import { useDispatch } from 'react-redux';
 
-export default function HomeView() {
-  return <CourseSection />;
+export default function CourseView() {
+  const dispatch = useDispatch();
+
+  dispatch(FetchAssignment());
+
+  return (
+    <>
+      <CourseDetails />
+      <DisplayCourse condition="not" />
+      <DisplayAssignment condition="yes" />
+    </>
+  );
 }

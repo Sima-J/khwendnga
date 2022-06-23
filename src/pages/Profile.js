@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
-import Camera from "../components/svg/Camera";
-import Img from "../image1.jpg";
-import { storage, db, auth } from"../controller";
+import React, { useState, useEffect } from 'react';
+import Camera from '../components/svg/Camera';
+import Img from '../image1.jpg';
+import { storage, db, auth } from '../controller';
 import {
   ref,
   getDownloadURL,
   uploadBytes,
   deleteObject,
-} from "firebase/storage";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
-import Delete from "../components/svg/Delete";
-import { useHistory } from "react-router-dom";
+} from 'firebase/storage';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import Delete from '../components/svg/Delete';
+import { useHistory } from 'react-router-dom';
 
 const Profile = () => {
-  const [img, setImg] = useState("");
+  const [img, setImg] = useState('');
   const [user, setUser] = useState();
-  const history = useHistory("");
+  const history = useHistory('');
 
   useEffect(() => {
-    getDoc(doc(db, "users", auth.currentUser.uid)).then((docSnap) => {
+    getDoc(doc(db, 'users', auth.currentUser.uid)).then((docSnap) => {
       if (docSnap.exists) {
         setUser(docSnap.data());
       }
@@ -28,7 +28,7 @@ const Profile = () => {
       const uploadImg = async () => {
         const imgRef = ref(
           storage,
-          `avatar/${new Date().getTime()} - ${img.name}`
+          `users/${new Date().getTime()} - ${img.name}`
         );
         try {
           if (user.avatarPath) {
@@ -37,12 +37,12 @@ const Profile = () => {
           const snap = await uploadBytes(imgRef, img);
           const url = await getDownloadURL(ref(storage, snap.ref.fullPath));
 
-          await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          await updateDoc(doc(db, 'users', auth.currentUser.uid), {
             avatar: url,
             avatarPath: snap.ref.fullPath,
           });
 
-          setImg("");
+          setImg('');
         } catch (err) {
           console.log(err.message);
         }
@@ -53,15 +53,15 @@ const Profile = () => {
 
   const deleteImage = async () => {
     try {
-      const confirm = window.confirm("Delete avatar?");
+      const confirm = window.confirm('Delete avatar?');
       if (confirm) {
         await deleteObject(ref(storage, user.avatarPath));
 
-        await updateDoc(doc(db, "users", auth.currentUser.uid), {
-          avatar: "",
-          avatarPath: "",
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+          avatar: '',
+          avatarPath: '',
         });
-        history.replace("/");
+        history.replace('/');
       }
     } catch (err) {
       console.log(err.message);
@@ -81,7 +81,7 @@ const Profile = () => {
               <input
                 type="file"
                 accept="image/*"
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 id="photo"
                 onChange={(e) => setImg(e.target.files[0])}
               />

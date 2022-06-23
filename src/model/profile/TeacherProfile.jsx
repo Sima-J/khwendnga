@@ -49,6 +49,7 @@ export default function Profile() {
 
       const q3 = query(
         collection(db, 'assignments'),
+        where('teacherId', '==', user?.uid),
         where('submission', '==', 'yes')
       );
       const doc3 = await getDocs(q3);
@@ -68,7 +69,7 @@ export default function Profile() {
   }, [user, loading]);
 
   return (
-    <main className="profile-page">
+    <main className="profile-page ">
       <section className="relative block" style={{ height: '500px' }}>
         <div
           className="absolute top-0 w-full h-full bg-center bg-cover"
@@ -165,14 +166,16 @@ export default function Profile() {
                   <FontAwesomeIcon className="mr-2" icon="map-marker-alt" />
                   {city}, {street}
                 </div>
-                <div className="mb-2 text-gray-700 mt-10">
-                  <FontAwesomeIcon className="mr-2" icon="school" />
-                  Grade {grade}
-                </div>
-              </div>
-              <div className="mt-5 py-5 text-center">
-                <div className="flex flex-wrap justify-center">
-                  <div className="w-full lg:w-9/12 px-4 mb-6"></div>
+                <div className="pb-4">
+                  <button
+                    class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
+                    onClick={() => {
+                      history.push(`/addCourse`);
+                    }}
+                  >
+                    {' '}
+                    Add New Course
+                  </button>
                 </div>
               </div>
             </div>

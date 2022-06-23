@@ -41,7 +41,7 @@ export default function CourseCards({
           className="w-24 h-24 rounded-full border-2 border-gray-300"
           src={image}
         />
-        <div id="header-text" className="leading-5 ml-6 sm">
+        <div id="header-text" className="leading-5 capitalize ml-6 sm">
           <h4 id="name" className="text-xl font-semibold">
             Teacher {name}
           </h4>

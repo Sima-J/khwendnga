@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { auth, db } from '../../controller';
 import { signOut } from 'firebase/auth';
 import { updateDoc, doc } from 'firebase/firestore';
-import { AuthContext } from '../../context/auth';
+import { AuthContext } from '../../controller';
 import { useHistory } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import './Navbar.css';

@@ -24,6 +24,7 @@ module.exports = {
         yellow: '#FDFF8F',
         white: '#FFFFFF',
         tGray: '#f9f6f6',
+        red:' #ff4040',
       },
       keyframes: {
         'spin-slow': {

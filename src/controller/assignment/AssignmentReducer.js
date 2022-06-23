@@ -7,10 +7,10 @@ import {
 const initialState = {
   loading: false,
   data: [],
-  course: {},
+  assignment: {},
 };
 
-const CourseReducer = (state = initialState, action) => {
+const AssignmentReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_ASSIGNMENT_REQUEST:
       return {
@@ -34,4 +34,4 @@ const CourseReducer = (state = initialState, action) => {
   }
 };
 
-export default CourseReducer;
+export default AssignmentReducer;

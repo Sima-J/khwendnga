@@ -1,5 +1,5 @@
-import React from "react";
-import Attachment from "./svg/Attachment";
+import React from 'react';
+import Attachment from './svg/Attachment';
 
 const MessageForm = ({ handleSubmit, text, setText, setImg }) => {
   return (
@@ -12,7 +12,7 @@ const MessageForm = ({ handleSubmit, text, setText, setImg }) => {
         type="file"
         id="img"
         accept="image/*"
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
       />
       <div>
         <input

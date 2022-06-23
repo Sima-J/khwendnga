@@ -13,6 +13,8 @@ export default function AddAssignment() {
   const [assignmentImage1, setAssignmentImage1] = useState(null);
   const [assignmentImage2, setAssignmentImage2] = useState(null);
   const [details, setDetails] = useState('');
+  const [asgTitle, setAsgTitle] = useState('');
+  const [asgDesc, setAsgDesc] = useState('');
   const [date, setDate] = useState(new Date());
   const [video, setVideo] = useState(null);
   const [file1, setFile1] = useState(null);
@@ -150,10 +152,15 @@ export default function AddAssignment() {
       details,
       date,
       file1,
+      submission,
+      asgTitle,
+      asgDesc,
       courseId: id,
       teacherId: user?.uid,
     });
     setTitle('');
+    setAsgTitle('');
+    setAsgDesc('');
     setAssignmentImage1(null);
     setAssignmentImage2(null);
     setVideo(null);
@@ -319,22 +326,7 @@ export default function AddAssignment() {
               />
             </span>
           </div>
-          <span className="w-full">
-            <label
-              htmlFor="courseCode"
-              className="block text-xs font-semibold mt-2 text-gray-600 uppercase"
-            >
-              Date{' '}
-            </label>
-            <input
-              type="date"
-              name="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
-            />
-          </span>
+
           <span className="w-full">
             <label
               htmlFor="details"
@@ -362,8 +354,64 @@ export default function AddAssignment() {
               Do you have submission{' '}
             </option>
             <option value="yes">yes</option>
-            <option value="no">no</option>
+            <option value="not">no</option>
           </select>
+          {(() => {
+            if (submission === 'yes') {
+              return (
+                <>
+                  <span className="w-full">
+                    <label
+                      htmlFor="date"
+                      className="block text-xs font-semibold mt-2 text-gray-600 uppercase"
+                    >
+                      Date - Deadline{' '}
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                      required
+                    />
+                  </span>
+                  <span className="w-full">
+                    <label
+                      htmlFor="asgTitle"
+                      className="block text-xs font-semibold mt-2 text-gray-600 uppercase"
+                    >
+                      Assignment Title{' '}
+                    </label>
+                    <input
+                      type="text"
+                      name="asgTitle"
+                      value={asgTitle}
+                      onChange={(e) => setAsgTitle(e.target.value)}
+                      className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                      required
+                    />
+                  </span>{' '}
+                  <span className="w-full">
+                    <label
+                      htmlFor="courseCode"
+                      className="block text-xs font-semibold mt-2 text-gray-600 uppercase"
+                    >
+                      Assignment Description
+                    </label>
+                    <textarea
+                      type="text"
+                      name="asgDesc"
+                      value={asgDesc}
+                      onChange={(e) => setAsgDesc(e.target.value)}
+                      className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                      required
+                    />
+                  </span>
+                </>
+              );
+            }
+          })()}
 
           <button
             onClick={addAssignment}

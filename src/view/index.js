@@ -8,3 +8,7 @@ export { default as ProfileView } from './profileView/ProfileView';
 export { default as EditProfileView } from './profileView/EditProfileView';
 export { default as CourseView } from './courseView/CourseView';
 export { default as AddAssignmentView } from './assignmentView/AddAssignmentView';
+export { default as LoadingView } from './loadingView/LoadingView';
+export { default as ChatView } from './chatView/ChatView';
+export { default as TeacherProfileView } from './profileView/TeacherProfileView';
+export { default as StudentsAssigmentView } from './assignmentView/StudentsAssigmentView';
