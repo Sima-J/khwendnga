@@ -63,6 +63,7 @@
   grid-template-columns: 1fr 3fr;
   overflow: hidden;
   height: calc(100vh - 70px);
+  margin-bottom: -5vh;
 }
 .users_container {
   margin-top: 10px;

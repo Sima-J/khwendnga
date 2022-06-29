@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import swal from 'sweetalert';
 
-export default function AddCourseView() {
+export default function AddCourse() {
   const [name, setFirstName] = useState('');
   const [image, setImage] = useState(null);
   const [courseImage, setCourseImage] = useState(null);

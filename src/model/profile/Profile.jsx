@@ -41,7 +41,7 @@ export default function Profile() {
       setRoleType(data1.roleType);
       const q2 = query(
         collection(db, 'courses'),
-        where('teacherId', '==', user?.uid)
+        where('courseLevel', '==', data.grade)
       );
       const doc2 = await getDocs(q2);
       const data2 = doc2.size;
@@ -53,7 +53,7 @@ export default function Profile() {
       );
       const doc3 = await getDocs(q3);
       const data3 = doc3.size;
-      setTotalAssignments(data3);
+      setTotalAssignments('1');
     } catch (err) {
       console.error(err);
       alert('An error occured while fetching user data');

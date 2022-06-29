@@ -61,7 +61,7 @@ export default function CourseDetails() {
             }}
           >
             {' '}
-            Add New Course
+            Add New Material
           </button>
         ) : (
           <></>

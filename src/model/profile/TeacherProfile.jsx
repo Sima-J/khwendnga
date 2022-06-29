@@ -170,11 +170,11 @@ export default function Profile() {
                   <button
                     class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
                     onClick={() => {
-                      history.push(`/addCourse`);
+                      history.push(`/register`);
                     }}
                   >
                     {' '}
-                    Add New Course
+                    register{' '}
                   </button>
                 </div>
               </div>

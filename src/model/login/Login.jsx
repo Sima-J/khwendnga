@@ -46,7 +46,7 @@ const Login = () => {
   };
   return (
     <div class="h-screen w-full  flex">
-      <div class="flex md:w-1/2 sd:min-w-[50%] sm:w-1/4 bg-heroLogin bg-tBlue bg-contain bg-no-repeat justify-around items-center">
+      <div class="flex md:w-1/2 mb-[-5vh] sd:min-w-[50%] sm:w-1/4 bg-heroLogin bg-tBlue bg-contain bg-no-repeat justify-around items-center">
         <div class="md:absolute  md:top-1/4 xl:left-[20%] mx-4 ">
           <h1 class=" font-extrabold  text-6xl leading-loose drop-shadow  bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-600 ">
             Khwendnga

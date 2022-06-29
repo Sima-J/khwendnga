@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 import origin from '../../assets/origin.svg';
@@ -8,7 +8,8 @@ import movie from '../../assets/move1.webm';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, storage, db } from '../../controller';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { useHistory } from 'react-router-dom';
 import swal from 'sweetalert';
 
 export default function CourseAssignment({
@@ -27,8 +28,10 @@ export default function CourseAssignment({
   asgDesc,
 }) {
   const [file11, setFile11] = useState(null);
-  const [user] = useAuthState(auth);
-
+  const [user, loading] = useAuthState(auth);
+  const [name, setName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [progress, setProgress] = useState(0);
 
   const formFile1Handler = (e) => {
@@ -37,7 +40,12 @@ export default function CourseAssignment({
     uploadFiles4(file);
     addDoc(collection(db, 'grades'), {
       id,
-      file1,
+      file11,
+      name,
+      middleName,
+      lastName,
+      asgTitle,
+      courseId,
       studentId: user?.uid,
     });
 
@@ -68,6 +76,27 @@ export default function CourseAssignment({
       }
     );
   };
+
+  const fetchInfo = async () => {
+    try {
+      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+      setName(data.name);
+      setMiddleName(data.middleName);
+      setLastName(data.lastName);
+    } catch (err) {
+      console.error(err);
+      alert('An error occured while fetching user data');
+    }
+  };
+  const history = useHistory();
+  useEffect(() => {
+    if (loading) return;
+
+    fetchInfo();
+  }, [loading]);
+
   return (
     <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
       <div className="grid gap-5 row-gap-6 lg:grid-cols-2">
@@ -136,7 +165,7 @@ export default function CourseAssignment({
           <form onSubmit={formFile1Handler}>
             <div className="mt-2 flex justify-center items-center">
               <iframe
-                src={file1}
+                src={file11}
                 width="100%"
                 height="500px"
                 title="asg"
