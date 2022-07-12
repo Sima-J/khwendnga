@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
 import { auth, db, storage } from '../../controller';
 import {
-  setDoc,
   doc,
   Timestamp,
   updateDoc,
@@ -20,10 +15,10 @@ import swal from 'sweetalert';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 const EditProfile = () => {
-  const [roleType, setRoleType] = useState('');
   const [user] = useAuthState(auth);
 
   const [image, setImage] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [progress, setProgress] = useState(0);
   const formHandler = (e) => {
     e.preventDefault();
@@ -46,7 +41,8 @@ const EditProfile = () => {
     if (!user) return history.push('/login');
 
     fetchInfo();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const uploadFiles = (file) => {
     //

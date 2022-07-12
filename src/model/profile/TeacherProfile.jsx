@@ -66,6 +66,7 @@ export default function Profile() {
     if (!user) return history.push('/login');
 
     fetchInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
 
   return (
@@ -170,7 +171,7 @@ export default function Profile() {
                   <button
                     class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
                     onClick={() => {
-                      history.push(`/register`);
+                      history.push(`/add`);
                     }}
                   >
                     {' '}
