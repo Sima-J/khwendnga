@@ -17,6 +17,7 @@ export default function Profile() {
   const [phone, setPhone] = useState('');
   const [image, setImage] = useState(null);
   const [grade, setGrade] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [roleType, setRoleType] = useState('');
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalAssignments, setTotalAssignments] = useState(0);
@@ -47,13 +48,21 @@ export default function Profile() {
       const data2 = doc2.size;
       setTotalCourses(data2);
 
+      const rows = [];
+
+      doc2.forEach((doc) => {
+        rows.push(doc.data().uid);
+        console.log(rows);
+      });
+
       const q3 = query(
         collection(db, 'assignments'),
+        where('courseId', 'in', rows),
         where('submission', '==', 'yes')
       );
       const doc3 = await getDocs(q3);
       const data3 = doc3.size;
-      setTotalAssignments('1');
+      setTotalAssignments(data3);
     } catch (err) {
       console.error(err);
       alert('An error occured while fetching user data');
@@ -65,6 +74,7 @@ export default function Profile() {
     if (!user) return history.push('/login');
 
     fetchInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
 
   return (

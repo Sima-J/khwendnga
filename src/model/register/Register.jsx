@@ -13,6 +13,7 @@ const Register = () => {
   const [roleType, setRoleType] = useState('');
 
   const [image, setImage] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [progress, setProgress] = useState(0);
   const formHandler = (e) => {
     e.preventDefault();
@@ -109,7 +110,6 @@ const Register = () => {
         city,
         phone,
         email,
-        password,
         grade,
         gName,
         gPhone,
