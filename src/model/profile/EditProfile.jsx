@@ -139,40 +139,6 @@ const EditProfile = () => {
         isOnline: true,
       });
 
-      setData({
-        name: '',
-        middleName: '',
-        lastName: '',
-        image: null,
-        street: '',
-        city: '',
-        phone: '',
-        email: '',
-        password: '',
-        grade: '',
-        gName: '',
-        gPhone: '',
-        gEmail: '',
-        error: null,
-        loading: false,
-      });
-
-      setData({
-        name: '',
-        middleName: '',
-        lastName: '',
-        image: null,
-        street: '',
-        city: '',
-        phone: '',
-        email: '',
-        password: '',
-        gName: '',
-        gPhone: '',
-        gEmail: '',
-        error: null,
-        loading: false,
-      });
       swal('', 'success', 'success');
 
       history.replace(`/editprofile/${user?.uid}`);
