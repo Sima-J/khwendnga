@@ -16,6 +16,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 const EditProfile = () => {
   const [user] = useAuthState(auth);
+  const [roleType, setRoleType] = useState('');
 
   const [image, setImage] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -32,6 +33,10 @@ const EditProfile = () => {
       const data = doc.docs[0].data();
       setData(data);
       setImage(data.image);
+      const q1 = query(collection(db, 'roles'), where('uid', '==', user?.uid));
+      const doc1 = await getDocs(q1);
+      const data1 = doc1.docs[0].data();
+      setRoleType(data1.roleType);
     } catch (err) {
       console.error(err);
       alert('An error occured while fetching user data');
@@ -235,7 +240,6 @@ const EditProfile = () => {
                   value={name}
                   onChange={handleChange}
                   className="block w-full p-4 mt-2  mb-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                  required
                 />
               </span>
               <span className="w-1/2">
@@ -251,7 +255,6 @@ const EditProfile = () => {
                   value={middleName}
                   onChange={handleChange}
                   className="block w-full p-4 mt-2  mb-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                  required
                 />
               </span>
               <span className="w-1/2">
@@ -267,7 +270,6 @@ const EditProfile = () => {
                   value={lastName}
                   onChange={handleChange}
                   className="block w-full p-4 mt-2 mb-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                  required
                 />
               </span>
             </div>
@@ -286,7 +288,6 @@ const EditProfile = () => {
                   value={city}
                   onChange={handleChange}
                   className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                  required
                 />
               </span>
               <span className="w-1/2">
@@ -302,49 +303,50 @@ const EditProfile = () => {
                   value={street}
                   onChange={handleChange}
                   className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                  required
                 />
               </span>
             </div>
-
-            <input
-              type="number"
-              name="grade"
-              placeholder="Student Grade"
-              value={grade}
-              onChange={handleChange}
-              className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
-            />
-            <input
-              type="text"
-              name="gName"
-              placeholder="Guardian Name"
-              value={gName}
-              onChange={handleChange}
-              className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
-            />
-            <input
-              type="tel"
-              name="gPhone"
-              value={gPhone}
-              onChange={handleChange}
-              placeholder="Guardian Phone"
-              className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
-            />
-            <input
-              id="gEmail"
-              type="email"
-              name="gEmail"
-              placeholder="Guardian Email"
-              value={gEmail}
-              onChange={handleChange}
-              className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
-            />
-
+            {(() => {
+              if (roleType === 'student') {
+                return (
+                  <>
+                    <input
+                      type="number"
+                      name="grade"
+                      placeholder="Student Grade"
+                      value={grade}
+                      onChange={handleChange}
+                      className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    />
+                    <input
+                      type="text"
+                      name="gName"
+                      placeholder="Guardian Name"
+                      value={gName}
+                      onChange={handleChange}
+                      className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    />
+                    <input
+                      type="tel"
+                      name="gPhone"
+                      value={gPhone}
+                      onChange={handleChange}
+                      placeholder="Guardian Phone"
+                      className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    />
+                    <input
+                      id="gEmail"
+                      type="email"
+                      name="gEmail"
+                      placeholder="Guardian Email"
+                      value={gEmail}
+                      onChange={handleChange}
+                      className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                    />
+                  </>
+                );
+              }
+            })()}
             <label
               htmlFor="email"
               className="block mt-2 text-xs font-semibold text-gray-600 uppercase"
@@ -357,7 +359,6 @@ const EditProfile = () => {
               value={email}
               onChange={handleChange}
               className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
             />
             <label
               htmlFor="phone"
@@ -371,7 +372,6 @@ const EditProfile = () => {
               value={phone}
               onChange={handleChange}
               className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-              required
             />
             <label
               htmlFor="password"
@@ -384,8 +384,8 @@ const EditProfile = () => {
               name="password"
               value={password}
               onChange={handleChange}
-              className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
               required
+              className="block w-full p-4 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             />
             {error ? <p className="error">{error}</p> : null}
             <div className="btn_container">

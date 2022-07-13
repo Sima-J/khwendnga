@@ -17,3 +17,5 @@ export { default as DisplayAssignment } from './course/DisplayAssignment';
 export { default as Chat } from './chat/Chat';
 export { default as TeacherProfile } from './profile/TeacherProfile';
 export { default as AssignmentTable } from './assignment/AssignmentTable';
+export { default as AdminProfile } from './profile/AdminProfile';
+export { default as EditCourse } from './course/EditCourse';

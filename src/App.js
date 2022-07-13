@@ -18,6 +18,8 @@ import {
   ChatView,
   TeacherProfileView,
   StudentsAssigmentView,
+  AdminProfileView,
+  EditCourseView,
 } from './view';
 import { FetchCourses } from './controller';
 import AuthProvider from './controller/context/auth';
@@ -45,6 +47,7 @@ function App() {
     if (loading) return;
 
     fetchUserRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
 
   var Profile;
@@ -53,7 +56,7 @@ function App() {
   } else if (roleType === 'teacher') {
     Profile = <PrivateRoute path="/profile" component={TeacherProfileView} />;
   } else {
-    Profile = <PrivateRoute path="/profile" component={ProfileView} />;
+    Profile = <PrivateRoute path="/profile" component={AdminProfileView} />;
   }
 
   return (
@@ -74,6 +77,7 @@ function App() {
             path="/courses/:id/addAssignment"
             component={AddAssignmentView}
           />
+          <PrivateRoute path="/editCourse/:id" component={EditCourseView} />
         </Switch>
 
         <FooterView />

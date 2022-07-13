@@ -2,9 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { db, auth } from '../../controller';
 import { useHistory } from 'react-router-dom';
 import background from '../../assets/students.jpg';
-import { query, collection, getDocs, where } from 'firebase/firestore';
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Swal from 'sweetalert2';
 
 export default function Profile() {
   const [user, loading] = useAuthState(auth);
@@ -16,10 +24,9 @@ export default function Profile() {
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
   const [image, setImage] = useState(null);
-  const [grade, setGrade] = useState('');
-  const [roleType, setRoleType] = useState('');
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalAssignments, setTotalAssignments] = useState(0);
+  const [courses, setCourses] = useState([]);
 
   const fetchInfo = async () => {
     try {
@@ -31,14 +38,10 @@ export default function Profile() {
       setLastName(data.lastName);
       setImage(data.image);
       setEmail(data.email);
-      setGrade(data.grade);
       setCity(data.city);
       setStreet(data.street);
       setPhone(data.phone);
-      const q1 = query(collection(db, 'roles'), where('uid', '==', user?.uid));
-      const doc1 = await getDocs(q1);
-      const data1 = doc1.docs[0].data();
-      setRoleType(data1.roleType);
+
       const q2 = query(
         collection(db, 'courses'),
         where('teacherId', '==', user?.uid)
@@ -55,6 +58,14 @@ export default function Profile() {
       const doc3 = await getDocs(q3);
       const data3 = doc3.size;
       setTotalAssignments(data3);
+
+      const rows = [];
+
+      doc2.forEach((doc) => {
+        rows.push(doc.data());
+        console.log(rows);
+      });
+      setCourses(rows);
     } catch (err) {
       console.error(err);
       alert('An error occured while fetching user data');
@@ -68,6 +79,77 @@ export default function Profile() {
     fetchInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
+  const deleteItem = (cId) => {
+    console.log(cId);
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger',
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteDoc(doc(db, 'courses', cId));
+          swalWithBootstrapButtons.fire(
+            'Deleted!',
+            'Your Course has been deleted.',
+            'success'
+          );
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'Your Course is safe :).',
+            'error'
+          );
+        }
+      });
+    window.setTimeout(function () {
+      window.location.reload();
+    }, 3000);
+  };
+
+  const courseItems = courses.map((course) => (
+    <div key={course.uid} className="  shadow-sm border-deep-purple-accent-400">
+      <img
+        className="object-cover w-full h-52 rounded shadow-lg sm:h-96"
+        src={course.courseImage}
+        alt="courseImage"
+      />
+      <div class="font-bold text-xl my-1">
+        {course.courseName} - {course.courseCode}
+      </div>
+      <button
+        type="button"
+        className="bg-red mx-2 my-2 px-4 py-1 rounded-md text-white hover:shadow-none focus:outline-none shadow-md  transition duration-300 ease-in-out "
+        onClick={() => {
+          deleteItem(`${course.uid}`);
+        }}
+      >
+        <FontAwesomeIcon icon="trash-alt" /> Delete
+      </button>
+      <button
+        type="button"
+        className="bg-yellow mx-2 my-2 px-4 py-1 rounded-md text-white drop-shadow-sm hover:shadow-none focus:outline-none shadow-md  transition duration-300 ease-in-out "
+        onClick={() => {
+          history.push(`/editCourse/${course.uid}`);
+        }}
+      >
+        <FontAwesomeIcon icon="pen" /> Edit
+      </button>
+    </div>
+  ));
 
   return (
     <main className="profile-page ">
@@ -103,7 +185,7 @@ export default function Profile() {
           </svg>
         </div>
       </section>
-      <section className="relative py-16 h-[45vh] mb-[-5vh] bg-gray-300">
+      <section className="relative py-16 min-h-screen mb-[-5vh] bg-gray-300">
         <div className="container mx-auto px-4">
           <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
             <div className="px-6">
@@ -125,7 +207,7 @@ export default function Profile() {
                       type="button"
                       style={{ transition: 'all .15s ease' }}
                       onClick={() => {
-                        history.push(`/editprofile/${user?.uid}`);
+                        history.push(`/editProfile/${user?.uid}`);
                       }}
                     >
                       Setting
@@ -171,12 +253,18 @@ export default function Profile() {
                   <button
                     class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
                     onClick={() => {
-                      history.push(`/addCourse`);
+                      history.push('/addCourse');
                     }}
                   >
                     {' '}
-                    Add New Course{' '}
+                    <FontAwesomeIcon className="mr-2" icon="plus" /> Add New
+                    Course{' '}
                   </button>
+                </div>
+                <div className="pb-4   my-4">
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mt-6">
+                    {courseItems}
+                  </div>
                 </div>
               </div>
             </div>

@@ -8,13 +8,20 @@ import movie from '../../assets/move1.webm';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, storage, db } from '../../controller';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import {
+  collection,
+  setDoc,
+  getDocs,
+  query,
+  where,
+  addDoc,
+} from 'firebase/firestore';
 import { useHistory } from 'react-router-dom';
 import swal from 'sweetalert';
 
 export default function CourseAssignment({
   title,
-  id,
+
   assignmentImage1,
   assignmentImage2,
   video,
@@ -23,8 +30,7 @@ export default function CourseAssignment({
   file1,
   asgTitle,
   courseId,
-  submission,
-  teacherId,
+
   asgDesc,
 }) {
   const [file11, setFile11] = useState(null);
@@ -39,7 +45,6 @@ export default function CourseAssignment({
     const file = e.target[0].files[0];
     uploadFiles4(file);
     addDoc(collection(db, 'grades'), {
-      id,
       file11,
       name,
       middleName,
@@ -49,7 +54,6 @@ export default function CourseAssignment({
       studentId: user?.uid,
     });
 
-    setFile11(null);
     swal('', 'success', 'success');
   };
 
@@ -98,10 +102,10 @@ export default function CourseAssignment({
   }, [loading]);
 
   return (
-    <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-      <div className="grid gap-5 row-gap-6 lg:grid-cols-2">
-        <div className="max-w-xl mb-6 lg:col-span-2">
-          <h1 className="max-w-lg mb-6  text-6xl font-bold tracking-tight text-normalPurple sm:text-4xl sm:leading-none">
+    <div className="px-4 py-16 mx-auto  md:px-24 lg:px-8 lg:py-20">
+      <div className="grid gap-4 row-gap-4 lg:grid-cols-1">
+        <div className=" mb-6 lg:col-span-2">
+          <h1 className="mb-6  text-6xl font-bold tracking-tight text-normalPurple sm:text-4xl sm:leading-none">
             {title}
           </h1>
           <p className="text-base text-2xl text-gray-700 md:text-xl">
@@ -109,7 +113,7 @@ export default function CourseAssignment({
           </p>
         </div>
         <div className="flex flex-col justify-center">
-          <div className="grid gap-5 row-gap-8 sm:grid-cols-2">
+          <div className="grid gap-4 row-gap-6 sm:grid-cols-2">
             <div className="  shadow-sm border-deep-purple-accent-400">
               <img
                 className="object-cover w-full h-52 rounded shadow-lg sm:h-96"
@@ -126,9 +130,8 @@ export default function CourseAssignment({
             </div>
           </div>
         </div>
-        <div className="m-auto">
+        <div className="mx-auto w-fit lg:col-span-2">
           <ReactPlayer
-            playing
             loop
             controls
             className="  border rounded-md shadow-sm "
@@ -136,7 +139,7 @@ export default function CourseAssignment({
           />
         </div>
         <div className="lg:col-span-2">
-          <h2 className="max-w-lg mb-2 mt-2 text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none">
+          <h2 className=" mb-2 mt-2 text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none">
             {asgTitle}
           </h2>
           <p className="text-base text-center text-2xl mb-4 mx-auto text-gray-700 md:text-xl">
@@ -151,55 +154,51 @@ export default function CourseAssignment({
               title="asg"
               className=" border rounded-md shadow-sm"
             ></iframe>
+
+            <div className=" ml-4">
+              <p className="text-base  text-2xl mb-4 mx-auto text-gray-700 md:text-xl">
+                The Deadline for this assessments:
+                <text className="text-red font-bold">{date}</text>{' '}
+              </p>
+              <p className="text-base  text-2xl mb-4 mx-auto text-gray-purple md:text-xl">
+                Submit Your Solution Below{' '}
+              </p>
+              <form onSubmit={formFile1Handler}>
+                <div className="mt-2 flex justify-center items-center">
+                  <iframe
+                    src={file11}
+                    width="90%"
+                    height="500px"
+                    title="asg"
+                    className=" border rounded-md shadow-sm"
+                  ></iframe>
+                </div>
+                <div className="mt-2 flex justify-center items-center">
+                  <label
+                    htmlFor="file1Upload"
+                    type="button"
+                    className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  >
+                    Select File
+                  </label>
+                  <input
+                    type="file"
+                    id="file1Upload"
+                    style={{ display: 'none' }}
+                    className="input"
+                  />
+
+                  <button
+                    className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    type="submit"
+                  >
+                    Upload
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-
-        <div className="col-span-2 mx-auto">
-          <p className="text-base  text-2xl mb-4 mx-auto text-gray-700 md:text-xl">
-            The Deadline for this assessments:
-            <text className="text-red font-bold">{date}</text>{' '}
-          </p>
-          <p className="text-base  text-2xl mb-4 mx-auto text-gray-purple md:text-xl">
-            Submit Your Solution Below{' '}
-          </p>
-          <form onSubmit={formFile1Handler}>
-            <div className="mt-2 flex justify-center items-center">
-              <iframe
-                src={file11}
-                width="100%"
-                height="500px"
-                title="asg"
-                className=" border rounded-md shadow-sm"
-              ></iframe>
-            </div>
-            <div className="mt-2 flex justify-center items-center">
-              <label
-                htmlFor="file1Upload"
-                type="button"
-                className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
-              >
-                Select File
-              </label>
-              <input
-                type="file"
-                id="file1Upload"
-                style={{ display: 'none' }}
-                className="input"
-              />
-
-              <button
-                className="ml-5  bg-normalPurple py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-white hover:bg-tBlue focus:outline-none focus:ring-2 focus:ring-offset-2"
-                type="submit"
-              >
-                Upload
-              </button>
-            </div>
-          </form>
-        </div>
-        <div className="hidden">{teacherId}</div>
-        <div className="hidden">{id}</div>
-        <div className="hidden">{file1}</div>
-        <div className="hidden">{submission}</div>
       </div>
     </div>
   );
@@ -216,7 +215,6 @@ CourseAssignment.propTypes = {
   asgTitle: PropTypes.string,
   asgDesc: PropTypes.string,
   teacherId: PropTypes.string,
-  id: PropTypes.number,
   title: PropTypes.string,
   submission: PropTypes.string,
 };
@@ -232,7 +230,6 @@ CourseAssignment.defaultProps = {
   file1: origin2,
   courseId: '',
   teacherId: '',
-  id: 0,
   title: '',
   submission: '',
 };

@@ -6,7 +6,7 @@ import { query, collection, getDocs, where } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function Profile() {
+export default function AdminProfile() {
   const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,11 +16,6 @@ export default function Profile() {
   const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
   const [image, setImage] = useState(null);
-  const [grade, setGrade] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [roleType, setRoleType] = useState('');
-  const [totalCourses, setTotalCourses] = useState(0);
-  const [totalAssignments, setTotalAssignments] = useState(0);
 
   const fetchInfo = async () => {
     try {
@@ -32,37 +27,9 @@ export default function Profile() {
       setLastName(data.lastName);
       setImage(data.image);
       setEmail(data.email);
-      setGrade(data.grade);
       setCity(data.city);
       setStreet(data.street);
       setPhone(data.phone);
-      const q1 = query(collection(db, 'roles'), where('uid', '==', user?.uid));
-      const doc1 = await getDocs(q1);
-      const data1 = doc1.docs[0].data();
-      setRoleType(data1.roleType);
-      const q2 = query(
-        collection(db, 'courses'),
-        where('courseLevel', '==', data.grade)
-      );
-      const doc2 = await getDocs(q2);
-      const data2 = doc2.size;
-      setTotalCourses(data2);
-
-      const rows = [];
-
-      doc2.forEach((doc) => {
-        rows.push(doc.data().uid);
-        console.log(rows);
-      });
-
-      const q3 = query(
-        collection(db, 'assignments'),
-        where('courseId', 'in', rows),
-        where('submission', '==', 'yes')
-      );
-      const doc3 = await getDocs(q3);
-      const data3 = doc3.size;
-      setTotalAssignments(data3);
     } catch (err) {
       console.error(err);
       alert('An error occured while fetching user data');
@@ -111,7 +78,7 @@ export default function Profile() {
           </svg>
         </div>
       </section>
-      <section className="relative py-16 h-[45vh] mb-[-5vh] bg-gray-300">
+      <section className="relative py-16 min-h-screen mb-[-5vh] bg-gray-300">
         <div className="container mx-auto px-4">
           <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
             <div className="px-6">
@@ -133,7 +100,7 @@ export default function Profile() {
                       type="button"
                       style={{ transition: 'all .15s ease' }}
                       onClick={() => {
-                        history.push(`/editprofile/${user?.uid}`);
+                        history.push(`/editProfile/${user?.uid}`);
                       }}
                     >
                       Setting
@@ -141,20 +108,7 @@ export default function Profile() {
                   </div>
                 </div>
                 <div className="w-full lg:w-4/12 px-4 lg:order-1">
-                  <div className="flex justify-center py-4 lg:pt-4 pt-8">
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                        {totalCourses}
-                      </span>
-                      <span className="text-sm text-gray-500">Course</span>
-                    </div>
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                        {totalAssignments}{' '}
-                      </span>
-                      <span className="text-sm text-gray-500">Assignment</span>
-                    </div>
-                  </div>
+                  <div className="flex justify-center py-4 lg:pt-4 pt-8"></div>
                 </div>
               </div>
               <div className="text-center mt-12">
@@ -175,9 +129,17 @@ export default function Profile() {
                   <FontAwesomeIcon className="mr-2" icon="map-marker-alt" />
                   {city}, {street}
                 </div>
-                <div className="mb-2 text-gray-700 mt-10">
-                  <FontAwesomeIcon className="mr-2" icon="school" />
-                  Grade {grade}
+                <div className="pb-4">
+                  <button
+                    class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
+                    onClick={() => {
+                      history.push('/register');
+                    }}
+                  >
+                    {' '}
+                    <FontAwesomeIcon className="mr-2" icon="plus" /> Add New{' '}
+                    Register New User{' '}
+                  </button>
                 </div>
               </div>
               <div className="mt-5 py-5 text-center">

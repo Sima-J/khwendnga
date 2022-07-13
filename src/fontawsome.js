@@ -6,6 +6,7 @@ import {
   faCoffee,
   faPhone,
   faEdit,
+  faPen,
   faUserCircle,
   faMapMarkerAlt,
   faEye,
@@ -26,6 +27,7 @@ import {
 
 library.add(
   fab,
+  faPen,
   faArrowDown,
   faChevronLeft,
   faTrashAlt,

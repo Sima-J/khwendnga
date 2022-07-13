@@ -21,10 +21,10 @@ module.exports = {
         normalPurple: '#8946A6',
         lightPurple: '#B762C1',
         blue: '#A8ECE7',
-        yellow: '#FDFF8F',
+        yellow: '#fdee00',
         white: '#FFFFFF',
         tGray: '#f9f6f6',
-        red:' #ff4040',
+        red: ' #ff4040',
       },
       keyframes: {
         'spin-slow': {

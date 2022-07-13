@@ -61,9 +61,9 @@ const Register = () => {
     error: null,
     loading: false,
   });
-  const email1 = 's1@gmail.com';
+  const email1 = 'admin@email.com';
   const password1 = '12345678';
-  const userId = 'RbHfiu4gtxRNg94tzBsSpXtaU6g1';
+  const userId = '3V06bGBE73QYFUnoP5a9pfli2LL2';
 
   const history = useHistory();
 

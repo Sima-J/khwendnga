@@ -12,3 +12,5 @@ export { default as LoadingView } from './loadingView/LoadingView';
 export { default as ChatView } from './chatView/ChatView';
 export { default as TeacherProfileView } from './profileView/TeacherProfileView';
 export { default as StudentsAssigmentView } from './assignmentView/StudentsAssigmentView';
+export { default as AdminProfileView } from './profileView/AdminProfileView';
+export { default as EditCourseView } from './courseView/EditCourseView';

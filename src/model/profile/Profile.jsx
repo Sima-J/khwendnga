@@ -111,7 +111,7 @@ export default function Profile() {
           </svg>
         </div>
       </section>
-      <section className="relative py-16 h-[45vh] mb-[-5vh] bg-gray-300">
+      <section className="relative py-16 min-h-screen mb-[-5vh] bg-gray-300">
         <div className="container mx-auto px-4">
           <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
             <div className="px-6">
@@ -133,7 +133,7 @@ export default function Profile() {
                       type="button"
                       style={{ transition: 'all .15s ease' }}
                       onClick={() => {
-                        history.push(`/editprofile/${user?.uid}`);
+                        history.push(`/editProfile/${user?.uid}`);
                       }}
                     >
                       Setting

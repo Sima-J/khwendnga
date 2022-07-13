@@ -52,7 +52,6 @@ export default function CourseSection({
         </div>
         <div className="m-auto">
           <ReactPlayer
-            playing
             loop
             controls
             className="  border rounded-md shadow-sm "

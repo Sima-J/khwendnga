@@ -9,9 +9,10 @@ import {
   where,
   getDocs,
   doc,
-  setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import swal from 'sweetalert';
+import { useParams } from 'react-router-dom';
 
 export default function EditCourse() {
   const [name, setFirstName] = useState('');
@@ -20,6 +21,7 @@ export default function EditCourse() {
   const [courseLevel, setCourseLevel] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
+  const { id } = useParams();
 
   // eslint-disable-next-line no-unused-vars
   const [progress, setProgress] = useState(0);
@@ -54,10 +56,10 @@ export default function EditCourse() {
   };
   const [user, loading] = useAuthState(auth);
 
-  const addCourse = (e) => {
+  const editCourse = (e) => {
     e.preventDefault();
-    const newDocRef = doc(collection(db, 'courses'));
-    setDoc(newDocRef, {
+    const newDocRef = doc(db, 'courses', id);
+    updateDoc(newDocRef, {
       courseImage,
       courseName,
       courseCode,
@@ -68,10 +70,6 @@ export default function EditCourse() {
       teacherId: user?.uid,
     });
 
-    setCourseImage(null);
-    setCourseName('');
-    setCourseCode('');
-    setCourseLevel('');
     swal('', 'success', 'success');
   };
 
@@ -90,18 +88,34 @@ export default function EditCourse() {
       alert('An error occured while fetching user data');
     }
   };
+  const fetchInfo = async () => {
+    try {
+      const q = query(collection(db, 'courses'), where('uid', '==', id));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+      setCourseImage(data.courseImage);
+      setCourseName(data.courseName);
+      setCourseCode(data.courseCode);
+      setCourseLevel(data.courseLevel);
+    } catch (err) {
+      console.error(err);
+      alert('An error occured while fetching user data');
+    }
+  };
 
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate.push('/');
 
     fetchUserName();
+    fetchInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
   return (
     <div className="grid min-h-screen w-screen  p-12 place-items-center">
       <div className="w-11/12 bg-white sm:w-8/12 md:w-1/2 lg:w-5/12">
         <h1 className="text-2xl font-bold text-center">
-          Adding New Course Teacher {name}
+          Edit Course Teacher {name}
           <br />
           <span className="font-normal text-center my-1">
             Please fill in Course information
@@ -146,9 +160,7 @@ export default function EditCourse() {
               <label
                 htmlFor="courseName"
                 className="block text-xs font-semibold text-gray-600 uppercase"
-              >
-                Course Name
-              </label>
+              ></label>
               <input
                 id="courseName"
                 type="text"
@@ -156,23 +168,19 @@ export default function EditCourse() {
                 value={courseName}
                 onChange={(e) => setCourseName(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                required
               />
             </span>
             <span className="w-1/2">
               <label
                 htmlFor="courseCode"
                 className="block text-xs font-semibold text-gray-600 uppercase"
-              >
-                Course Code
-              </label>
+              ></label>
               <input
                 type="text"
                 name="courseCode"
                 value={courseCode}
                 onChange={(e) => setCourseCode(e.target.value)}
                 className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-                required
               />
             </span>
           </div>
@@ -180,12 +188,11 @@ export default function EditCourse() {
           <select
             value={courseLevel}
             onChange={(e) => setCourseLevel(e.target.value)}
-            name="accountType"
+            name="courseLvel"
             className="form-select block w-full p-3 mt-4 text-gray-700 bg-gray-200  focus:outline-none focus:bg-gray-300 focus:shadow-inner"
-            required
           >
-            <option value="" selected disabled hidden>
-              Choose Course Level
+            <option selected disabled hidden>
+              value={courseLevel}
             </option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -196,7 +203,7 @@ export default function EditCourse() {
           </select>
 
           <button
-            onClick={addCourse}
+            onClick={editCourse}
             className="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-black shadow-lg focus:outline-none hover:bg-gray-900 hover:shadow-none"
           >
             Submit
