@@ -47,7 +47,6 @@ export default function Navbar() {
           <div className="nav-links">
             <Link to="/">Home</Link>
             <Link to="/chat">Chat</Link>
-            <Link to="/Grade">Grade</Link>
             <Link to="/Profile">Profile</Link>
             <button
               onClick={handleSignout}
