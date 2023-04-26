@@ -20,6 +20,7 @@ import {
   StudentsAssigmentView,
   AdminProfileView,
   EditCourseView,
+  CourseStudentsView,
 } from './view';
 import { FetchCourses } from './controller';
 import AuthProvider from './controller/context/auth';
@@ -78,6 +79,10 @@ function App() {
             component={AddAssignmentView}
           />
           <PrivateRoute path="/editCourse/:id" component={EditCourseView} />
+          <PrivateRoute
+            path="/viewstudents/:id"
+            component={CourseStudentsView}
+          />
         </Switch>
 
         <FooterView />
