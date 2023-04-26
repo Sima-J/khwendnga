@@ -23,6 +23,7 @@ import {
   faChevronLeft,
   faArrowDown,
   faSchool,
+  faChild,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -46,6 +47,7 @@ library.add(
   faSearchPlus,
   faImages,
   faPlus,
+  faChild,
   faUser,
   faSchool
 );

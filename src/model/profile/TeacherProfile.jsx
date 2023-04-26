@@ -151,6 +151,15 @@ export default function Profile() {
       >
         <FontAwesomeIcon icon="pen" /> Edit
       </button>
+      <button
+        type="button"
+        className="bg-blue mx-2 my-2 px-4 py-1 rounded-md text-white drop-shadow-sm hover:shadow-none focus:outline-none shadow-md  transition duration-300 ease-in-out "
+        onClick={() => {
+          history.push(`/viewstudents/${course.courseLevel}`);
+        }}
+      >
+        <FontAwesomeIcon icon="child" /> View Studnts
+      </button>
     </div>
   ));
 

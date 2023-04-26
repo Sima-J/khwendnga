@@ -19,3 +19,4 @@ export { default as TeacherProfile } from './profile/TeacherProfile';
 export { default as AssignmentTable } from './assignment/AssignmentTable';
 export { default as AdminProfile } from './profile/AdminProfile';
 export { default as EditCourse } from './course/EditCourse';
+export { default as CourseStudents } from './course/CourseStudents';
