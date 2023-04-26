@@ -1,8 +1,8 @@
-import React from 'react';
-import chat from '../../assets/disscuss.svg';
-import course from '../../assets/course.svg';
-import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React from "react";
+import chat from "../../assets/disscuss.svg";
+import course from "../../assets/course.svg";
+import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function CourseCards({
   courseImage,
@@ -29,7 +29,7 @@ export default function CourseCards({
         </button>
       </div>
       <div className="px-5 py-3">
-        <span className="text-black text-lg uppercase font-bold text-darkPurple">
+        <span className=" text-lg uppercase font-bold text-darkPurple">
           <h3>
             {courseName} - {courseCode}
           </h3>
@@ -55,7 +55,7 @@ export default function CourseCards({
         onKeyDown={handleClick}
         className="flex items-center  w-1/2 mb-4  mx-auto mt-4 px-3 py-2 bg-normalPurple  text-sm uppercase font-medium rounded-md hover:bg-darkPurple focus:outline-none focus:bg-darkPurple"
       >
-        <img src={course} className="w-1/5 mr-2" alt="chat" />{' '}
+        <img src={course} className="w-1/5 mr-2" alt="chat" />{" "}
         <span className="text-white">View Details</span>
       </button>
     </div>
@@ -75,8 +75,8 @@ CourseCards.defaultProps = {
   image: course,
   courseImage: course,
   id: 0,
-  courseName: '',
-  courseCode: '',
-  courseLevel: '',
-  name: '',
+  courseName: "",
+  courseCode: "",
+  courseLevel: "",
+  name: "",
 };

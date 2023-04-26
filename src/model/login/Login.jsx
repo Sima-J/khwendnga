@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../../controller';
-import { updateDoc, doc } from 'firebase/firestore';
-import { useHistory } from 'react-router-dom';
-import girlStudent from '../../assets/girlStudent.svg';
+import React, { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../controller";
+import { updateDoc, doc } from "firebase/firestore";
+import { useHistory } from "react-router-dom";
+import girlStudent from "../../assets/girlStudent.svg";
 
 const Login = () => {
   const [data, setData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     error: null,
     loading: false,
   });
@@ -25,38 +25,38 @@ const Login = () => {
     e.preventDefault();
     setData({ ...data, error: null, loading: true });
     if (!email || !password) {
-      setData({ ...data, error: 'All fields are required' });
+      setData({ ...data, error: "All fields are required" });
     }
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
 
-      await updateDoc(doc(db, 'users', result.user.uid), {
+      await updateDoc(doc(db, "users", result.user.uid), {
         isOnline: true,
       });
       setData({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
         error: null,
         loading: false,
       });
-      history.replace('/');
+      history.replace("/");
     } catch (err) {
       setData({ ...data, error: err.message, loading: false });
     }
   };
   return (
-    <div class="h-screen w-full  flex">
-      <div class="flex md:w-1/2 mb-[-5vh] sd:min-w-[50%] sm:w-1/4 bg-heroLogin bg-tBlue bg-contain bg-no-repeat justify-around items-center">
-        <div class="md:absolute  md:top-1/4 xl:left-[20%] mx-4 ">
-          <h1 class=" font-extrabold  text-6xl leading-loose drop-shadow  bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-600 ">
+    <div class="h-screen w-full  flex ">
+      <div class="hidden md:block md:w-1/2 lg:w-1/2 xl:w-1/2 bg-heroLogin bg-darkPurple bg-contain bg-no-repeat justify-around items-center">
+        <div class="md:absolute  md:top-20 xl:left-[20%] mx-4 ">
+          <h1 class=" font-extrabold  text-5xl text-center leading-loose drop-shadow  bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-600 ">
             Khwendnga
           </h1>
-          <p class="text-tGray font-bold text-xl mt-4 ">
+          <p class="text-tGray font-bold text-lg mt-2 text-center ">
             LEARNING HAS NEVER BEEN EASIER!
           </p>
         </div>
       </div>
-      <div class="flex md:w-1/2 sm:w-1/4  justify-center items-center bg-white">
+      <div class="flex md:w-1/2 w-full justify-center items-center bg-white">
         <div class="bg-white w-3/4">
           <h1 class="text-normalPurple font-bold text-5xl mb-2">
             Hello Again!
@@ -105,7 +105,7 @@ const Login = () => {
                 class="block w-full bg-indigo-600 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
                 disabled={loading}
               >
-                {loading ? 'Logging in ...' : 'Login'}
+                {loading ? "Logging in ..." : "Login"}
               </button>
             </div>
           </form>

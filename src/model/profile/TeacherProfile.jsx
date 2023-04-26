@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { db, auth } from '../../controller';
-import { useHistory } from 'react-router-dom';
-import background from '../../assets/students.jpg';
+import React, { useState, useEffect } from "react";
+import { db, auth } from "../../controller";
+import { useHistory } from "react-router-dom";
+import background from "../../assets/students.jpg";
 import {
   query,
   collection,
@@ -9,20 +9,20 @@ import {
   where,
   deleteDoc,
   doc,
-} from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Swal from 'sweetalert2';
+} from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 
 export default function Profile() {
   const [user, loading] = useAuthState(auth);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [street, setStreet] = useState('');
-  const [city, setCity] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [phone, setPhone] = useState("");
   const [image, setImage] = useState(null);
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalAssignments, setTotalAssignments] = useState(0);
@@ -30,7 +30,7 @@ export default function Profile() {
 
   const fetchInfo = async () => {
     try {
-      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
       setName(data.name);
@@ -43,17 +43,17 @@ export default function Profile() {
       setPhone(data.phone);
 
       const q2 = query(
-        collection(db, 'courses'),
-        where('teacherId', '==', user?.uid)
+        collection(db, "courses"),
+        where("teacherId", "==", user?.uid)
       );
       const doc2 = await getDocs(q2);
       const data2 = doc2.size;
       setTotalCourses(data2);
 
       const q3 = query(
-        collection(db, 'assignments'),
-        where('teacherId', '==', user?.uid),
-        where('submission', '==', 'yes')
+        collection(db, "assignments"),
+        where("teacherId", "==", user?.uid),
+        where("submission", "==", "yes")
       );
       const doc3 = await getDocs(q3);
       const data3 = doc3.size;
@@ -68,13 +68,13 @@ export default function Profile() {
       setCourses(rows);
     } catch (err) {
       console.error(err);
-      alert('An error occured while fetching user data');
+      alert("An error occured while fetching user data");
     }
   };
   const history = useHistory();
   useEffect(() => {
     if (loading) return;
-    if (!user) return history.push('/login');
+    if (!user) return history.push("/login");
 
     fetchInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,35 +83,35 @@ export default function Profile() {
     console.log(cId);
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger',
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
       },
       buttonsStyling: false,
     });
 
     swalWithBootstrapButtons
       .fire({
-        title: 'Are you sure?',
+        title: "Are you sure?",
         text: "You won't be able to revert this!",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
         reverseButtons: true,
       })
       .then((result) => {
         if (result.isConfirmed) {
-          deleteDoc(doc(db, 'courses', cId));
+          deleteDoc(doc(db, "courses", cId));
           swalWithBootstrapButtons.fire(
-            'Deleted!',
-            'Your Course has been deleted.',
-            'success'
+            "Deleted!",
+            "Your Course has been deleted.",
+            "success"
           );
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'Your Course is safe :).',
-            'error'
+            "Cancelled",
+            "Your Course is safe :).",
+            "error"
           );
         }
       });
@@ -121,9 +121,12 @@ export default function Profile() {
   };
 
   const courseItems = courses.map((course) => (
-    <div key={course.uid} className="  shadow-sm border-deep-purple-accent-400">
+    <div
+      key={course.uid}
+      className="  shadow-md rounded-md border-deep-purple-accent-400  "
+    >
       <img
-        className="object-cover w-full h-52 rounded shadow-lg sm:h-96"
+        className="object-cover w-full h-52 rounded  sm:h-96"
         src={course.courseImage}
         alt="courseImage"
       />
@@ -153,7 +156,7 @@ export default function Profile() {
 
   return (
     <main className="profile-page ">
-      <section className="relative block" style={{ height: '500px' }}>
+      <section className="relative block" style={{ height: "500px" }}>
         <div
           className="absolute top-0 w-full h-full bg-center bg-cover"
           style={{
@@ -167,7 +170,7 @@ export default function Profile() {
         </div>
         <div
           className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden"
-          style={{ height: '70px' }}
+          style={{ height: "70px" }}
         >
           <svg
             className="absolute bottom-0 overflow-hidden"
@@ -196,7 +199,7 @@ export default function Profile() {
                       alt="..."
                       src={image}
                       className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16"
-                      style={{ maxWidth: '150px' }}
+                      style={{ maxWidth: "150px" }}
                     />
                   </div>
                 </div>
@@ -205,7 +208,7 @@ export default function Profile() {
                     <button
                       className="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1"
                       type="button"
-                      style={{ transition: 'all .15s ease' }}
+                      style={{ transition: "all .15s ease" }}
                       onClick={() => {
                         history.push(`/editProfile/${user?.uid}`);
                       }}
@@ -224,7 +227,7 @@ export default function Profile() {
                     </div>
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                        {totalAssignments}{' '}
+                        {totalAssignments}{" "}
                       </span>
                       <span className="text-sm text-gray-500">Assignment</span>
                     </div>
@@ -232,37 +235,37 @@ export default function Profile() {
                 </div>
               </div>
               <div className="text-center mt-12">
-                <h3 className="text-4xl font-semibold uppercase leading-normal mb-2 text-gray-800 mb-2">
+                <h3 className="text-4xl font-semibold uppercase leading-normal mb-2 text-gray-800">
                   {name}&nbsp;&nbsp;
                   {middleName}&nbsp;&nbsp;
                   {lastName}
                 </h3>
-                <div className="text-sm capitalize leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
+                <div className="text-sm capitalize leading-normal mt-0 mb-2 text-gray-500 font-bold">
                   <FontAwesomeIcon className="mr-2" icon="envelope" />
                   {email}
                 </div>
-                <div className="text-sm capitalize leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
+                <div className="text-sm capitalize leading-normal mt-0 mb-2 text-gray-500 font-bold">
                   <FontAwesomeIcon className="mr-2" icon="phone" />
                   {phone}
                 </div>
-                <div className="text-sm capitalize leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
+                <div className="text-sm capitalize leading-normal mt-0 mb-2 text-gray-500 font-bold">
                   <FontAwesomeIcon className="mr-2" icon="map-marker-alt" />
                   {city}, {street}
                 </div>
                 <div className="pb-4">
                   <button
-                    class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold mb-2"
+                    class="items-center mx-auto  block w-1/2 bg-normalPurple mb-6 mt-4 py-3 rounded-2xl text-white font-semibold"
                     onClick={() => {
-                      history.push('/addCourse');
+                      history.push("/addCourse");
                     }}
                   >
-                    {' '}
+                    {" "}
                     <FontAwesomeIcon className="mr-2" icon="plus" /> Add New
-                    Course{' '}
+                    Course{" "}
                   </button>
                 </div>
                 <div className="pb-4   my-4">
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mt-6">
+                  <div className="grid gap-6 place-items-center sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mt-6">
                     {courseItems}
                   </div>
                 </div>
