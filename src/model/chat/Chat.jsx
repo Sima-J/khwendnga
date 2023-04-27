@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { db, auth, storage } from '../../controller';
+import React, { useEffect, useState } from "react";
+import { db, auth, storage } from "../../controller";
 import {
   collection,
   query,
@@ -12,26 +12,26 @@ import {
   doc,
   getDoc,
   updateDoc,
-} from 'firebase/firestore';
-import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
-import User from './User';
-import MessageForm from './MessageForm';
-import Message from './Message';
-import './chat.css';
+} from "firebase/firestore";
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import User from "./User";
+import MessageForm from "./MessageForm";
+import Message from "./Message";
+import "./chat.css";
 
 const Chat = () => {
   const [users, setUsers] = useState([]);
-  const [chat, setChat] = useState('');
-  const [text, setText] = useState('');
-  const [img, setImg] = useState('');
+  const [chat, setChat] = useState("");
+  const [text, setText] = useState("");
+  const [img, setImg] = useState("");
   const [msgs, setMsgs] = useState([]);
 
   const user1 = auth.currentUser.uid;
 
   useEffect(() => {
-    const usersRef = collection(db, 'users');
+    const usersRef = collection(db, "users");
     // create query object
-    const q = query(usersRef, where('uid', 'not-in', [user1]));
+    const q = query(usersRef, where("uid", "not-in", [user1]));
     // execute query
     const unsub = onSnapshot(q, (querySnapshot) => {
       let users = [];
@@ -49,8 +49,8 @@ const Chat = () => {
     const user2 = user.uid;
     const id = user1 > user2 ? `${user1 + user2}` : `${user2 + user1}`;
 
-    const msgsRef = collection(db, 'messages', id, 'chat');
-    const q = query(msgsRef, orderBy('createdAt', 'asc'));
+    const msgsRef = collection(db, "messages", id, "chat");
+    const q = query(msgsRef, orderBy("createdAt", "asc"));
 
     onSnapshot(q, (querySnapshot) => {
       let msgs = [];
@@ -61,11 +61,11 @@ const Chat = () => {
     });
 
     // get last message b/w logged in user and selected user
-    const docSnap = await getDoc(doc(db, 'lastMsg', id));
+    const docSnap = await getDoc(doc(db, "lastMsg", id));
     // if last message exists and message is from selected user
     if (docSnap.data() && docSnap.data().from !== user1) {
       // update last message doc, set unread to false
-      await updateDoc(doc(db, 'lastMsg', id), { unread: false });
+      await updateDoc(doc(db, "lastMsg", id), { unread: false });
     }
   };
 
@@ -87,25 +87,25 @@ const Chat = () => {
       url = dlUrl;
     }
 
-    await addDoc(collection(db, 'messages', id, 'chat'), {
+    await addDoc(collection(db, "messages", id, "chat"), {
       text,
       from: user1,
       to: user2,
       createdAt: Timestamp.fromDate(new Date()),
-      media: url || '',
+      media: url || "",
     });
 
-    await setDoc(doc(db, 'lastMsg', id), {
+    await setDoc(doc(db, "lastMsg", id), {
       text,
       from: user1,
       to: user2,
       createdAt: Timestamp.fromDate(new Date()),
-      media: url || '',
+      media: url || "",
       unread: true,
     });
 
-    setText('');
-    setImg('');
+    setText("");
+    setImg("");
   };
   return (
     <div className="home_container ">
@@ -120,7 +120,7 @@ const Chat = () => {
           />
         ))}
       </div>
-      <div className="messages_container">
+      <div className="messages_container mb-5 ">
         {chat ? (
           <>
             <div className="messages_user">

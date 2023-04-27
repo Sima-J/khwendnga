@@ -24,9 +24,12 @@ export default function CourseCards({
         className="flex items-end justify-end h-56 w-full bg-cover"
         style={{ backgroundImage: `url(${courseImage})` }}
       >
-        <button className="p-2 rounded-full bg-yellow text-white mx-5 -mb-6 hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
+        <a
+          href={`/chat`}
+          className="p-2 rounded-full bg-yellow text-white mx-5 -mb-6 hover:bg-blue-500 focus:outline-none focus:bg-blue-500"
+        >
           <img src={chat} alt="chatIcon" className="w-8 h-8" />
-        </button>
+        </a>
       </div>
       <div className="px-5 py-3">
         <span className=" text-lg uppercase font-bold text-darkPurple">
@@ -55,7 +58,7 @@ export default function CourseCards({
         onKeyDown={handleClick}
         className="flex items-center  w-1/2 mb-4  mx-auto mt-4 px-3 py-2 bg-normalPurple  text-sm uppercase font-medium rounded-md hover:bg-darkPurple focus:outline-none focus:bg-darkPurple"
       >
-        <img src={course} className="w-1/5 mr-2" alt="chat" />{" "}
+        <img src={course} className="w-1/5 mr-2" alt="chat" />
         <span className="text-white">View Details</span>
       </button>
     </div>

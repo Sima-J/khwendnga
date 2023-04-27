@@ -153,7 +153,7 @@ export default function Profile() {
       </button>
       <button
         type="button"
-        className="bg-blue mx-2 my-2 px-4 py-1 rounded-md text-white drop-shadow-sm hover:shadow-none focus:outline-none shadow-md  transition duration-300 ease-in-out "
+        className="bg-tBlue mx-2 my-2 px-4 py-1 rounded-md text-white drop-shadow-sm hover:shadow-none focus:outline-none shadow-md  transition duration-300 ease-in-out "
         onClick={() => {
           history.push(`/viewstudents/${course.courseLevel}`);
         }}
@@ -236,7 +236,7 @@ export default function Profile() {
                     </div>
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                        {totalAssignments}{" "}
+                        {totalAssignments}
                       </span>
                       <span className="text-sm text-gray-500">Assignment</span>
                     </div>
@@ -268,9 +268,8 @@ export default function Profile() {
                       history.push("/addCourse");
                     }}
                   >
-                    {" "}
                     <FontAwesomeIcon className="mr-2" icon="plus" /> Add New
-                    Course{" "}
+                    Course
                   </button>
                 </div>
                 <div className="pb-4   my-4">

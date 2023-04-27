@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export default function SecondSection() {
   return (
@@ -38,10 +38,10 @@ export default function SecondSection() {
               </h2>
               <p className="mt-2 text-white">Check your grades!</p>
               <Link
-                to="/chat"
+                to="/grade"
                 className="flex items-center mt-4 text-white text-sm uppercase font-medium rounded hover:underline hover:text-normalPurple focus:outline-none"
               >
-                <span>Grade Now</span>
+                <span>Your Grade </span>
                 <svg
                   className="h-5 w-5 mx-2"
                   fill="none"
@@ -57,7 +57,7 @@ export default function SecondSection() {
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
     </div>
   );
 }
